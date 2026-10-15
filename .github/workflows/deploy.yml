@@ -6,11 +6,12 @@
 #
 # Runs on every push to main, nightly (to pick up new episodes), and by hand.
 #
-# Optional repository secrets (Settings → Secrets and variables → Actions):
+# Optional repository secret (Settings → Secrets and variables → Actions):
 #   CLOUDFLARE_API_TOKEN   token from the "Edit Cloudflare Workers" template
-#   CLOUDFLARE_ACCOUNT_ID  shown on the Cloudflare dashboard's Workers page
-# Without them the page is still published, using the RELAY_URL repository
-# variable if set.
+# The account is looked up from the token (or set CLOUDFLARE_ACCOUNT_ID), and a
+# workers.dev subdomain is claimed if the account has none yet. Without the
+# token the page is still published, using the RELAY_URL repository variable
+# if set.
 
 name: Deploy
 
@@ -50,21 +51,42 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Check for Cloudflare credentials
+      - name: Prepare Cloudflare account
         id: creds
         env:
           TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if [ -n "$TOKEN" ] && [ -n "$ACCOUNT" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"
-          else echo "::warning::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID not set; skipping relay deploy"; fi
+          if [ -z "$TOKEN" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN not set; skipping relay deploy"; exit 0
+          fi
+          api() { curl -sS -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "$@"; }
+          if [ -z "$ACCOUNT" ]; then
+            ACCOUNT=$(api "https://api.cloudflare.com/client/v4/accounts?per_page=5" | python3 -c "import json,sys; r=json.load(sys.stdin).get('result') or []; print(r[0]['id'] if r else '')")
+          fi
+          if [ -z "$ACCOUNT" ]; then
+            echo "::error::The API token can't see any Cloudflare account. Recreate it from the 'Edit Cloudflare Workers' template with your account selected."; exit 1
+          fi
+          echo "::add-mask::$ACCOUNT"
+          sub=$(api "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT/workers/subdomain" | python3 -c "import json,sys; d=json.load(sys.stdin); print((d.get('result') or {}).get('subdomain') or '')")
+          if [ -z "$sub" ]; then
+            for want in deangadberry deangadberry-hebrew aleph-with-beth-$RANDOM; do
+              ok=$(api -X PUT "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT/workers/subdomain" -d "{\"subdomain\":\"$want\"}" | python3 -c "import json,sys; print(json.load(sys.stdin).get('success'))")
+              if [ "$ok" = "True" ]; then sub=$want; echo "Claimed $want.workers.dev"; break; fi
+            done
+          fi
+          if [ -z "$sub" ]; then echo "::error::Couldn't find or claim a workers.dev subdomain"; exit 1; fi
+          echo "Relay will be at aleph-with-beth-relay.$sub.workers.dev"
+          echo "account=$ACCOUNT" >> "$GITHUB_OUTPUT"
+          echo "subdomain=$sub" >> "$GITHUB_OUTPUT"
+          echo "ok=true" >> "$GITHUB_OUTPUT"
       - name: Deploy relay
         id: deploy
         if: steps.creds.outputs.ok == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          accountId: ${{ steps.creds.outputs.account }}
           workingDirectory: relay
           command: deploy
       - name: Relay address
@@ -73,12 +95,15 @@ jobs:
           DEPLOYED: ${{ steps.deploy.outputs.deployment-url }}
           OUTPUT: ${{ steps.deploy.outputs.command-output }}
           FALLBACK: ${{ vars.RELAY_URL }}
+          SUBDOMAIN: ${{ steps.creds.outputs.subdomain }}
         run: |
           url="$DEPLOYED"
           if [ -z "$url" ]; then url=$(printf '%s' "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' | head -1); fi
+          if [ -z "$url" ] && [ -n "$SUBDOMAIN" ]; then url="https://aleph-with-beth-relay.$SUBDOMAIN.workers.dev"; fi
           if [ -z "$url" ]; then url="$FALLBACK"; fi
           if [ -n "$url" ]; then
-            curl -fsS "$url/v1/health" && echo
+            # a brand-new workers.dev address can take a minute to answer
+            for i in 1 2 3 4 5 6 7 8 9 10; do curl -fsS "$url/v1/health" && echo && break; sleep 15; done
           else
             echo "::warning::No relay address yet — the page will ask for one in Settings"
           fi

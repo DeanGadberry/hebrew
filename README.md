@@ -46,14 +46,13 @@ browser ──► Cloudflare Worker (relay/) ──► Lets.Church / Internet Ar
 
 ## Setup (one time)
 
-Everything deploys from `.github/workflows/deploy.yml` on each push to `main`, nightly, or by hand.
+Everything deploys from `.github/workflows/deploy.yml` on each push to `main`, nightly, or by hand. It always builds `main`, whichever branch is the repository default.
 
-1. **GitHub Pages**: Settings → Pages → Source: **GitHub Actions**. The workflow tries to switch this on itself, so check it only if the first deploy fails.
-2. **Cloudflare relay**: add two repository secrets (Settings → Secrets and variables → Actions):
+1. **GitHub Pages** publishes from the `gh-pages` branch, which the workflow updates. Nothing to set.
+2. **Cloudflare relay**: add one repository secret (Settings → Secrets and variables → Actions):
    - `CLOUDFLARE_API_TOKEN`: Cloudflare dashboard → My Profile → API Tokens → *Create Token* → template **Edit Cloudflare Workers**.
-   - `CLOUDFLARE_ACCOUNT_ID`: shown on the Cloudflare dashboard's *Workers & Pages* overview.
 
-   The next deploy publishes the Worker and points the page at it. Without the secrets the page still publishes; set the `RELAY_URL` repository variable, or enter the address in the page's Settings.
+   The next deploy finds the account, claims a `workers.dev` subdomain if there isn't one, publishes the Worker and points the page at it. Without the token the page still publishes; set the `RELAY_URL` repository variable, or enter the address in the page's Settings.
 
 No DNS changes are needed: the `DeanGadberry.github.io` repo owns `www.deangadberry.com`, so this repo's Pages site appears at `/hebrew/`.
 
