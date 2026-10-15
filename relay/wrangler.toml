@@ -1,0 +1,9 @@
+# Deploy with:  cd relay && npx wrangler deploy
+# (or let .github/workflows/relay.yml do it — see README)
+name = "aleph-with-beth-relay"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+# Pages that may use this relay (comma separated). Add your own domain if you move the site.
+ALLOWED_ORIGINS = "https://deangadberry.github.io,http://localhost:8000"
