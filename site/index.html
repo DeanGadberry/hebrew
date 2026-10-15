@@ -20,19 +20,6 @@
     </div>
   </header>
 
-  <div class="bar" id="bar">
-    <div class="wrap bar-inner">
-      <div class="summary" aria-live="polite">
-        <strong id="sel-count">0</strong> <span id="sel-noun">episodes selected</span>
-        <span class="muted" id="sel-size">Pick episodes below</span>
-      </div>
-      <div class="bar-actions">
-        <button class="btn ghost" id="pick-folder" hidden>Save to folder…</button>
-        <button class="btn primary" id="download" disabled>Download</button>
-      </div>
-    </div>
-  </div>
-
   <main class="wrap">
     <div id="notice" class="notice" hidden></div>
 
@@ -68,9 +55,28 @@
 
       <div class="row quick">
         <button type="button" class="btn ghost" id="select-all">Select all</button>
-        <button type="button" class="btn ghost" id="select-new">Not yet saved</button>
         <button type="button" class="btn ghost" id="clear">Clear</button>
         <span class="hint">Or tick episodes; <kbd>Shift</kbd>-tick selects everything between.</span>
+      </div>
+
+      <div class="summary-row" id="bar">
+        <div class="summary" aria-live="polite">
+          <div><strong id="sel-count">0</strong> <span id="sel-noun">episodes selected</span></div>
+          <div class="muted" id="sel-size">Pick episodes with the range or the list below</div>
+          <div class="unavail" id="unavail" hidden>
+            <span id="unavail-text"></span>
+            <span class="info">
+              <button type="button" class="info-btn" id="unavail-info" aria-describedby="unavail-tip" aria-expanded="false" aria-label="Which episodes?">
+                <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="6.3" r="1.1" fill="currentColor"/><path d="M10 9v5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+              <span class="tip" role="tooltip" id="unavail-tip"></span>
+            </span>
+          </div>
+        </div>
+        <div class="bar-actions">
+          <button class="btn ghost" id="pick-folder" hidden>Save to folder…</button>
+          <button class="btn primary" id="download" disabled>Download</button>
+        </div>
       </div>
     </section>
 

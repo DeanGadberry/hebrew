@@ -110,34 +110,42 @@ function renderEpisodes() {
     const li = document.createElement('li');
     li.className = 'ep' + (state.selected.has(ep.id) ? ' selected' : '');
     li.dataset.id = ep.id;
-    if (ep.description) li.title = ep.description;
 
     const box = document.createElement('input');
     box.type = 'checkbox';
     box.checked = state.selected.has(ep.id);
     box.setAttribute('aria-label', `Select ${ep.title}`);
 
+    const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.alt = '';
+    if (ep.thumbnail) img.src = ep.thumbnail;
+
+    const season = state.catalog.seasons.find((x) => x.number === ep.season);
+    const text = document.createElement('div');
+    text.className = 'text';
     const num = document.createElement('span');
     num.className = 'num';
-    const season = state.catalog.seasons.find((x) => x.number === ep.season);
-    num.textContent = state.search ? `S${ep.season}·${ep.episode}` : String(ep.episode);
-    if (state.search) num.title = season.name;
-
+    num.textContent = state.search ? `${season.name} · ${ep.episode}` : String(ep.episode);
     const title = document.createElement('span');
     title.className = 'title';
     title.textContent = ep.title;
+    const desc = document.createElement('span');
+    desc.className = 'desc';
+    desc.textContent = ep.description || '';
+    text.append(num, title, desc);
 
     const tags = document.createElement('span');
     tags.className = 'tags';
-    if (ep.source === 'torrent') tags.insertAdjacentHTML('beforeend', '<span class="badge" title="Only in the creators’ torrent; fetched by the “Fetch missing lessons” GitHub workflow">Torrent</span>');
+    if (ep.source === 'torrent') tags.insertAdjacentHTML('beforeend', '<span class="badge" title="Not downloadable here; see the note by the Download button">Not here</span>');
     if (ep.source === 'archive') tags.insertAdjacentHTML('beforeend', '<span class="badge" title="Not on Lets.Church; downloaded from the Internet Archive as 720p video">Archive 720p</span>');
-    if (isSaved(ep.id)) tags.insertAdjacentHTML('beforeend', '<span class="saved" title="Already saved at this quality">✓</span>');
+    if (isSaved(ep.id)) tags.insertAdjacentHTML('beforeend', '<span class="saved" title="Downloaded in this browser before (at this quality)">✓</span>');
 
     const meta = document.createElement('span');
     meta.className = 'meta';
-    meta.textContent = ep.source === 'torrent' ? fmtSize(estimateMb(ep)) : `${fmtDuration(ep.duration)} · ${fmtSize(estimateMb(ep))}`;
+    meta.textContent = ep.source === 'torrent' ? '' : `${fmtDuration(ep.duration)} · ${fmtSize(estimateMb(ep))}`;
 
-    li.append(box, num, title, tags, meta);
+    li.append(box, img, text, tags, meta);
     li.addEventListener('click', (e) => {
       state.trimActive = false;
       toggle(ep.id, e.shiftKey, e.target === box ? box.checked : !state.selected.has(ep.id));
@@ -150,16 +158,37 @@ function renderEpisodes() {
 }
 
 function renderBar() {
-  const eps = state.catalog.episodes.filter((e) => state.selected.has(e.id));
+  const picked = state.catalog.episodes.filter((e) => state.selected.has(e.id));
+  const missing = picked.filter((e) => e.source === 'torrent');
+  const eps = picked.filter((e) => e.source !== 'torrent');
+  renderUnavailable(missing);
   $('sel-count').textContent = String(eps.length);
   $('sel-noun').textContent = eps.length === 1 ? 'episode selected' : 'episodes selected';
   const mb = eps.reduce((sum, e) => sum + estimateMb(e), 0);
   const min = eps.reduce((sum, e) => sum + e.duration, 0);
   // Always one line of text, so the pinned bar never changes height mid-drag.
-  $('sel-size').textContent = eps.length ? `${fmtDuration(min)} · about ${fmtSize(mb)} · ${QUALITY[state.quality].label}` : 'Pick episodes below';
+  $('sel-size').textContent = eps.length ? `${fmtDuration(min)} · about ${fmtSize(mb)} · ${QUALITY[state.quality].label}` : 'Pick episodes with the range or the list below';
   $('download').disabled = eps.length === 0;
   $('pick-folder').hidden = !canPickFolder;
   $('pick-folder').textContent = state.folder ? `Folder: ${state.folder.name}` : 'Save to folder…';
+}
+
+// Lessons that only exist in the creators' torrent can't be downloaded in a
+// browser. Mention them only when they're selected, with the details behind ⓘ.
+function renderUnavailable(missing) {
+  $('unavail').hidden = missing.length === 0;
+  if (!missing.length) { setTip(false); return; }
+  const lessons = missing.map((e) => e.lesson);
+  $('unavail-text').innerHTML = `${missing.length === 1 ? 'One of these episodes isn’t' : `${missing.length} of these episodes aren’t`} available here —
+    <a href="${REPO_URL}/actions/workflows/fetch-missing.yml" target="_blank" rel="noopener">get ${missing.length === 1 ? 'it' : 'them'} another way</a>`;
+  $('unavail-tip').innerHTML = `<strong>Not included in this download:</strong> ${missing.map((e) => e.label).join(', ')}.<br>
+    They exist only in the creators’ torrent. Open the link, press <em>Run workflow</em> and enter <code>${lessons.join(',')}</code>
+    (or leave <code>missing</code> for all of them); a zip of tagged files appears on the run page a few minutes later.`;
+}
+
+function setTip(open) {
+  $('unavail-info').setAttribute('aria-expanded', String(open));
+  $('unavail-info').closest('.info').classList.toggle('open', open);
 }
 
 // ---------------------------------------------------------------------------
@@ -219,14 +248,21 @@ function setupTrimDrag() {
     const hi = Number($('trim-hi').value);
     if (v < lo) which = 'lo';
     else if (v > hi) which = 'hi';
+    else if (lo === hi) which = 'either'; // stacked handles: the drag direction decides
     else which = v - lo <= hi - v ? 'lo' : 'hi';
+    startX = e.clientX;
     track.setPointerCapture(e.pointerId);
-    $('trim-' + which).focus({ preventScroll: true });
-    move(e);
+    if (which !== 'either') { $('trim-' + which).focus({ preventScroll: true }); move(e); }
     e.preventDefault();
   });
+  let startX = 0;
   const move = (e) => {
     if (!which) return;
+    if (which === 'either') {
+      if (Math.abs(e.clientX - startX) < 3) return;
+      which = e.clientX > startX ? 'hi' : 'lo';
+      $('trim-' + which).focus({ preventScroll: true });
+    }
     const input = $('trim-' + which);
     const v = String(valueAt(e.clientX));
     if (input.value !== v) { input.value = v; onTrim(which); }
@@ -361,6 +397,15 @@ async function pump() {
 
   let target = { mode: 'opfs', tempName: `${job.id}-${Date.now()}.part` };
   if (state.folder) {
+    // Resuming a batch: skip episodes whose finished file is already in the folder.
+    try {
+      const existing = await (await state.folder.getFileHandle(job.filename)).getFile();
+      if (existing.size > 0) {
+        markSaved(job);
+        finishJob(job, 'done', `Already in ${state.folder.name} — skipped`);
+        return;
+      }
+    } catch { /* not there yet */ }
     target = { mode: 'dir', handle: state.folder };
   } else if (navigator.storage?.estimate) {
     const { quota = 0, usage = 0 } = await navigator.storage.estimate();
@@ -391,6 +436,15 @@ function finishJob(job, result, message) {
   pump();
 }
 
+// Remembered per browser only — shown as a hint (✓), never used to skip work.
+function markSaved(job) {
+  const list = new Set(state.saved[job.quality] || []);
+  list.add(job.ep.id);
+  state.saved[job.quality] = [...list];
+  store.set('saved', state.saved);
+  renderEpisodes();
+}
+
 async function handOff(tempName, filename) {
   // The finished file sits in the browser's private storage; hand it to Downloads.
   const root = await navigator.storage.getDirectory();
@@ -418,10 +472,7 @@ async function onWorkerMessage(msg) {
   } else if (msg.type === 'done') {
     try {
       if (msg.mode === 'opfs') await handOff(job.tempName, job.filename);
-      const list = new Set(state.saved[job.quality] || []);
-      list.add(job.ep.id);
-      state.saved[job.quality] = [...list];
-      store.set('saved', state.saved);
+      markSaved(job);
       finishJob(job, 'done', `Saved ${fmtSize(msg.bytes / 1048576)}${msg.mode === 'dir' ? ` to ${state.folder.name}` : ' to Downloads'}`);
       renderEpisodes();
     } catch (err) {
@@ -440,16 +491,8 @@ function startDownloads() {
     showNotice('Add the relay address in Settings first (see the README for the one-time setup).', true);
     return;
   }
-  const picked = state.catalog.episodes.filter((e) => state.selected.has(e.id));
-  const fromTorrent = picked.filter((e) => e.source === 'torrent');
-  const eps = picked.filter((e) => e.source !== 'torrent');
-  if (fromTorrent.length) {
-    const lessons = fromTorrent.map((e) => e.lesson).join(',');
-    showNotice(`Lesson${fromTorrent.length > 1 ? 's' : ''} ${lessons} only exist in the creators’ torrent, which a browser can’t download.
-      Open <a href="${REPO_URL}/actions/workflows/fetch-missing.yml" target="_blank" rel="noopener">Fetch missing lessons</a>,
-      click <strong>Run workflow</strong> (it fetches every missing lesson by default, or type <code>${lessons}</code>),
-      then download the zip from the finished run. The files are tagged just like these.`);
-  }
+  // Torrent-only lessons are left out; the note by the button explains them.
+  const eps = state.catalog.episodes.filter((e) => state.selected.has(e.id) && e.source !== 'torrent');
   for (const ep of eps) {
     if (state.queue.some((j) => j.ep.id === ep.id && j.quality === state.quality && (j.state === 'waiting' || j.state === 'running'))) continue;
     state.queue.push({
@@ -467,7 +510,6 @@ function startDownloads() {
   render();
   renderQueue();
   if (eps.length) $('queue-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  else $('notice').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   pump();
 }
 
@@ -504,9 +546,6 @@ async function init() {
 
   if (!supported()) {
     showNotice('This browser can’t save large files from a web page. Please use a current Chrome, Edge, Safari or Firefox.', true);
-  } else if (state.catalog.missingLessons?.length) {
-    showNotice(`Lessons ${state.catalog.missingLessons.join(', ')} aren’t on Lets.Church or the Internet Archive, so they come from the creators’ <a href="https://freehebrew.online/offline/" target="_blank" rel="noopener">torrent</a>
-      through a one-click <a href="${REPO_URL}/actions/workflows/fetch-missing.yml" target="_blank" rel="noopener">GitHub workflow</a>. They’re marked “Torrent” in the list.`);
   }
 
   $('search').addEventListener('input', (e) => { state.search = e.target.value; renderSeasons(); renderEpisodes(); });
@@ -516,7 +555,12 @@ async function init() {
   $('trim-hi').addEventListener('input', () => onTrim('hi'));
   setupTrimDrag();
   $('select-all').addEventListener('click', () => selectWhere(() => true));
-  $('select-new').addEventListener('click', () => selectWhere((ep) => !isSaved(ep.id)));
+  $('unavail-info').addEventListener('click', (e) => {
+    e.stopPropagation();
+    setTip($('unavail-info').getAttribute('aria-expanded') !== 'true');
+  });
+  document.addEventListener('click', (e) => { if (!e.target.closest('.info')) setTip(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setTip(false); });
   $('clear').addEventListener('click', () => {
     state.selected.clear();
     state.trimSeason = null; // reset the range handles too
