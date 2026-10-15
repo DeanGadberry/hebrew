@@ -23,9 +23,9 @@ def benc(v):
 
 class TorrentFetchTest(unittest.TestCase):
     def test_file_list(self):
-        meta = {"info": {"name": "root", "piece length": 16384, "pieces": b"x" * 20, "files": [
-            {"length": 10, "path": ["Aleph", "067 - Something-Lesson 67.mp4"]},
-            {"length": 20, "path": ["Aleph", "068 - Where Is Joseph-Lesson 68.mp4"]},
+        meta = {"info": {"name": "Aleph with Beth 2026 - Lessons 1-156 - 1080p", "piece length": 16384, "pieces": b"x" * 20, "files": [
+            {"length": 10, "path": ["137 - Lesson 67 - Something.mp4"]},
+            {"length": 20, "path": ["138 - Lesson 68 - Killing in the Camp.mp4"]},
         ]}}
         with tempfile.NamedTemporaryFile(suffix=".torrent", delete=False) as f:
             f.write(benc(meta))
@@ -33,10 +33,12 @@ class TorrentFetchTest(unittest.TestCase):
             files = tf.torrent_files(f.name)
         finally:
             os.unlink(f.name)
-        self.assertEqual(files[1], (2, "Aleph/068 - Where Is Joseph-Lesson 68.mp4", 20))
+        # aria2 saves multi-file torrents under a folder named after the torrent
+        self.assertEqual(files[1], (2, "Aleph with Beth 2026 - Lessons 1-156 - 1080p/138 - Lesson 68 - Killing in the Camp.mp4", 20))
 
     def test_lesson_key(self):
         self.assertEqual(tf.lesson_key("x/068 - Where Is Joseph-Lesson 68.mp4"), (68, ""))
+        self.assertEqual(tf.lesson_key("x/138 - Lesson 68 - Killing in the Camp.mp4"), (68, ""))
         self.assertEqual(tf.lesson_key("x/Lesson 70b - More passages.mp4"), (70, "b"))
         self.assertEqual(tf.lesson_key("x/Lesson 072.mp4"), (72, ""))
         self.assertIsNone(tf.lesson_key("x/Review Game for Lessons 67-68.mp4"))
@@ -44,6 +46,8 @@ class TorrentFetchTest(unittest.TestCase):
 
     def test_title(self):
         self.assertEqual(tf.title_from("068 - Where Is Joseph-Lesson 68.mp4"), "Where Is Joseph")
+        self.assertEqual(tf.title_from("138 - Lesson 68 - Killing in the Camp.mp4"), "Killing in the Camp")
+        self.assertEqual(tf.title_from("140 - Lesson 70b - More Bible passages.mp4"), "More Bible passages")
         self.assertIsNone(tf.title_from("Lesson 68.mp4"))
 
     def test_magnet(self):
