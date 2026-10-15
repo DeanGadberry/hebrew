@@ -152,8 +152,9 @@ def main():
             name = os.path.basename(path)
             m = re.match(r"^(\d+)\s*-\s*(.+?)\.\w+$", name)
             if m and name.lower().endswith(VIDEO_EXT):
-                order.append({"seq": int(m.group(1)), "name": m.group(2), "size": size})
-        order.sort(key=lambda x: x["seq"])
+                folder = "/".join(path.split("/")[1:-1])  # below the torrent's root folder
+                order.append({"folder": folder, "seq": int(m.group(1)), "name": m.group(2), "size": size})
+        order.sort(key=lambda x: (x["folder"], x["seq"]))
         with open(args.write_index, "w", encoding="utf-8") as f:
             json.dump({"torrent": TORRENTS[args.resolution][1], "lessons": index, "order": order},
                       f, ensure_ascii=False, indent=1, sort_keys=True)
