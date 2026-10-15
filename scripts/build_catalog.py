@@ -87,7 +87,11 @@ def fetch_channel():
 
 
 def fetch_archive_lessons():
-    """Lessons in the Internet Archive items: {(number, suffix): episode-fields}."""
+    """Lessons and review games in the Internet Archive items.
+
+    Returns {(number, suffix): fields} for lessons, plus reviews under
+    ("review", first, last) keys. Lessons fill gaps in Lets.Church; both
+    serve as automatic fallbacks when a Lets.Church download fails."""
     found = {}
     for item in ARCHIVE_ITEMS:
         req = urllib.request.Request(f"https://archive.org/metadata/{item}", headers={"User-Agent": USER_AGENT})
@@ -99,8 +103,20 @@ def fetch_archive_lessons():
             if f.get("format") == "Thumbnail" and f.get("original"):
                 thumbs.setdefault(f["original"], []).append(f["name"])
         for f in files:
-            m = ARCHIVE_LESSON_RE.match(f["name"]) if f.get("source") == "original" else None
-            if not m or not f.get("length"):
+            if f.get("source") != "original" or not f.get("length") or not f["name"].lower().endswith(".mp4"):
+                continue
+            if re.search(r"review game", f["name"], re.I):
+                k = course_key("review", f["name"])
+                if k:
+                    thumb = sorted(thumbs.get(f["name"], []))
+                    found[k] = {
+                        "size": int(f.get("size") or 0),
+                        "height": int(f.get("height") or 0),
+                        "archive": {"item": item, "file": f["name"], "thumb": thumb[0] if thumb else None},
+                    }
+                continue
+            m = ARCHIVE_LESSON_RE.match(f["name"])
+            if not m:
                 continue
             name, number, suffix = m.group(1).strip(), int(m.group(2)), m.group(3).lower()
             thumb = sorted(thumbs.get(f["name"], []))
@@ -266,7 +282,7 @@ def build(items, archive_lessons=None):
 
     # Patch lessons Lets.Church is missing with Internet Archive copies.
     for key, extra in (archive_lessons or {}).items():
-        if key in by_season[1]:
+        if key[0] == "review" or key in by_season[1]:
             continue
         label = f"Lesson {key[0]}{key[1]}"
         item = {
@@ -332,6 +348,19 @@ def build(items, archive_lessons=None):
                 })
 
     missing = sorted(e["lesson"] for e in episodes if e.get("source") == "torrent")
+
+    # Internet Archive copies of episodes Lets.Church also has: the page falls
+    # back to them automatically if a Lets.Church download fails.
+    for ep in episodes:
+        if ep.get("source"):
+            continue
+        kind = {1: "lesson", 2: "review"}.get(ep["season"])
+        k = course_key(kind, ep["sourceTitle"]) if kind else None
+        if k and kind == "lesson":
+            k = (k[1], k[2])
+        alt = (archive_lessons or {}).get(k) if k else None
+        if alt:
+            ep["archiveAlt"] = {**alt["archive"], "size": alt["size"], "height": alt["height"]}
     add_tv_order(episodes, load_torrent_index().get("order", []))
 
     return {

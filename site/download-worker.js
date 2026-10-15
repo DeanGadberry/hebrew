@@ -116,11 +116,10 @@ async function run(job, target) {
   } catch (err) {
     if (sink) await sink.abort().catch(() => {});
     let message = signal.aborted ? 'Cancelled' : (err && err.message) || String(err);
-    // fetch() reports an unreachable host as a bare TypeError.
-    if (!signal.aborted && err instanceof TypeError && /fetch|network|load/i.test(message)) {
-      message = 'Couldn’t reach the relay — check the address under Settings, or try again';
-    }
-    postMessage({ type: 'error', id: job.id, message, cancelled: signal.aborted });
+    // fetch() reports an unreachable host (before any response) as a TypeError.
+    const relayUnreachable = !signal.aborted && !sink && err instanceof TypeError;
+    if (relayUnreachable) message = 'Couldn’t reach the relay — check the address under Settings, or try again';
+    postMessage({ type: 'error', id: job.id, message, cancelled: signal.aborted, relayUnreachable });
   } finally {
     controllers.delete(job.id);
   }

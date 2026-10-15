@@ -385,7 +385,7 @@ function renderQueue() {
       const b = document.createElement('button');
       b.className = 'btn';
       b.textContent = 'Retry';
-      b.onclick = () => { job.state = 'waiting'; job.status = 'Waiting…'; job.bytes = 0; renderQueue(); pump(); };
+      b.onclick = () => { job.retried = false; job.useArchive = false; job.filename = filenameFor(job.ep, job.quality); job.state = 'waiting'; job.status = 'Waiting…'; job.bytes = 0; renderQueue(); pump(); };
       actions.append(b);
     }
     li.append(actions);
@@ -397,6 +397,14 @@ function renderQueue() {
 function cancelJob(job) {
   if (job.state === 'waiting') { finishJob(job, 'error', 'Cancelled'); return; }
   if (job.state === 'running') getWorker().postMessage({ type: 'cancel', id: job.id });
+}
+
+// The episode as it will actually be fetched: after a Lets.Church failure the
+// job switches to the Internet Archive copy (720p) when one exists.
+function sourceEp(job) {
+  if (!job.useArchive) return job.ep;
+  const alt = job.ep.archiveAlt;
+  return { ...job.ep, source: 'archive', archive: alt, size: alt.size, height: alt.height };
 }
 
 async function pump() {
@@ -433,12 +441,22 @@ async function pump() {
     target,
     job: {
       id: job.id,
-      ...sourceUrls(job.ep, job.quality),
-      audioOnly: qualityFor(job.ep, job.quality) === 'AUDIO',
+      ...sourceUrls(sourceEp(job), job.quality),
+      audioOnly: qualityFor(sourceEp(job), job.quality) === 'AUDIO',
       filename: job.filename,
-      metadata: metadataFor(job.ep, job.quality),
+      metadata: metadataFor(sourceEp(job), job.quality),
     },
   });
+}
+
+// Put a running job back at the front of the queue to run again right away.
+function requeue(job, message) {
+  job.state = 'waiting';
+  job.status = message;
+  job.bytes = 0;
+  if (state.running === job) state.running = null;
+  renderQueue();
+  pump();
 }
 
 function finishJob(job, result, message) {
@@ -492,7 +510,21 @@ async function onWorkerMessage(msg) {
       finishJob(job, 'error', `Could not save: ${err.message}`);
     }
   } else if (msg.type === 'error') {
-    finishJob(job, 'error', msg.message);
+    if (msg.cancelled) { finishJob(job, 'error', 'Cancelled'); return; }
+    // Unreachable relay: every source goes through it, so retrying won't help.
+    const relayDown = !!msg.relayUnreachable;
+    if (!relayDown && !job.retried) {
+      job.retried = true;
+      requeue(job, `Failed (${msg.message}) — retrying…`);
+    } else if (!relayDown && !job.useArchive && job.ep.archiveAlt && job.quality !== 'AUDIO') {
+      job.useArchive = true;
+      job.retried = false;
+      job.filename = filenameFor(sourceEp(job), job.quality);
+      job.estimateMb = job.ep.archiveAlt.size / 1048576;
+      requeue(job, 'Lets.Church didn’t work — trying the Internet Archive copy (720p)…');
+    } else {
+      finishJob(job, 'error', job.useArchive ? `Lets.Church and the Internet Archive both failed: ${msg.message}` : msg.message);
+    }
   }
 }
 
