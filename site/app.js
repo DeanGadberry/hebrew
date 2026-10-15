@@ -67,10 +67,16 @@ function estimateMb(ep, quality = state.quality) {
 // ---------------------------------------------------------------------------
 // Rendering
 
+// Search ignores case, accents and Hebrew vowel points / cantillation, so
+// "דברים", "דְּבָרִים" and "introduccion" all match.
+function fold(text) {
+  return text.normalize('NFKD').replace(/[\u0300-\u036f\u0591-\u05c7]/g, '').toLowerCase();
+}
+
 function visibleEpisodes() {
-  const q = state.search.trim().toLowerCase();
+  const q = fold(state.search.trim());
   return state.catalog.episodes.filter((ep) => {
-    if (q) return ep.title.toLowerCase().includes(q) || (ep.label || '').toLowerCase() === q || String(ep.episode) === q;
+    if (q) return fold(ep.title).includes(q) || fold(ep.label || '') === q || String(ep.episode) === q;
     return ep.season === state.season;
   });
 }
