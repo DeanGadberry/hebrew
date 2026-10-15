@@ -118,6 +118,8 @@ def main():
     ap.add_argument("--work", default="work")
     ap.add_argument("--out", default="tagged")
     ap.add_argument("--list-only", action="store_true")
+    ap.add_argument("--write-index", metavar="PATH",
+                    help="write {lesson: {title, size, file}} for every lesson in the torrent, then stop")
     args = ap.parse_args()
 
     with open(args.catalog, encoding="utf-8") as f:
@@ -126,7 +128,7 @@ def main():
         wanted = set(catalog.get("missingLessons", []))
     else:
         wanted = {int(x) for x in re.findall(r"\d+", args.lessons)}
-    if not wanted:
+    if not wanted and not args.write_index:
         print("Nothing to fetch: no lessons requested / none missing.")
         return
 
@@ -136,6 +138,18 @@ def main():
         run(["aria2c", "--bt-metadata-only=true", "--bt-save-metadata=true", "--enable-dht=true",
              "--bt-stop-timeout=600", f"--dir={args.work}", "--summary-interval=30", magnet(args.resolution)])
     files = torrent_files(torrent)
+
+    if args.write_index:
+        index = {}
+        for _, path, size in files:
+            key = lesson_key(path)
+            if key:
+                index[f"{key[0]}{key[1]}"] = {"title": title_from(path), "size": size, "file": os.path.basename(path)}
+        with open(args.write_index, "w", encoding="utf-8") as f:
+            json.dump({"torrent": TORRENTS[args.resolution][1], "lessons": index}, f, ensure_ascii=False, indent=1, sort_keys=True)
+            f.write("\n")
+        print(f"Wrote {len(index)} lessons to {args.write_index}")
+        return
 
     chosen = {}
     for index, path, size in files:

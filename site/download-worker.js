@@ -115,7 +115,11 @@ async function run(job, target) {
     postMessage({ type: 'done', id: job.id, bytes: result.bytesWritten, mode: target.mode });
   } catch (err) {
     if (sink) await sink.abort().catch(() => {});
-    const message = signal.aborted ? 'Cancelled' : (err && err.message) || String(err);
+    let message = signal.aborted ? 'Cancelled' : (err && err.message) || String(err);
+    // fetch() reports an unreachable host as a bare TypeError.
+    if (!signal.aborted && err instanceof TypeError && /fetch|network|load/i.test(message)) {
+      message = 'Couldn’t reach the relay — check the address under Settings, or try again';
+    }
     postMessage({ type: 'error', id: job.id, message, cancelled: signal.aborted });
   } finally {
     controllers.delete(job.id);

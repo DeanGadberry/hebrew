@@ -1,0 +1,42 @@
+# Reads the creators' torrent's file list (a few KB, not the videos) and saves
+# lesson titles and sizes to site/torrent-index.json, so the page can show real
+# titles for lessons that only exist in the torrent. Then redeploys the page.
+
+name: Index torrent
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 8 1 * *" # monthly
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: sudo apt-get update -q && sudo apt-get install -yq aria2
+      - run: python3 scripts/torrent_fetch.py --lessons none --write-index site/torrent-index.json --work "$RUNNER_TEMP/torrent"
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- site/torrent-index.json && git ls-files --error-unmatch site/torrent-index.json >/dev/null 2>&1; then
+            echo "No change"; exit 0
+          fi
+          python3 scripts/build_catalog.py site/catalog.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/torrent-index.json site/catalog.json
+          git commit -m "Update torrent index"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Redeploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main

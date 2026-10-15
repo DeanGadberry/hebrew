@@ -17,6 +17,7 @@ Usage: python3 scripts/build_catalog.py [output.json]
 
 import datetime
 import json
+import os
 import re
 import sys
 import time
@@ -33,6 +34,8 @@ USER_AGENT = "aleph-with-beth-offline/1.0 (+https://github.com/DeanGadberry/hebr
 ARCHIVE_ITEMS = ["aleph-with-beth-lessons-1-66-1080p"]
 # The creators' torrents hold lessons 1-156 (https://freehebrew.online/offline/).
 TORRENT_LAST_LESSON = 156
+# Titles/sizes from the torrent's file list (written by the "Index torrent" workflow).
+TORRENT_INDEX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site", "torrent-index.json")
 ARCHIVE_LESSON_RE = re.compile(r"^(?:\d+\s*-\s*)?(.*?)\s*-\s*Lesson (\d+)([a-zA-Z]?)\.mp4$")
 
 SEASONS = {
@@ -182,15 +185,22 @@ def build(items, archive_lessons=None):
     # Whatever is still missing comes from the creators' torrent (lessons 1-156),
     # fetched by the "Fetch missing lessons" workflow. Placeholders keep the
     # episode numbers stable and let the page offer them.
+    try:
+        with open(TORRENT_INDEX, encoding="utf-8") as f:
+            torrent_index = json.load(f)["lessons"]
+    except (FileNotFoundError, ValueError, KeyError):
+        torrent_index = {}
     have = set(by_season[1])
     top = max((key[0] for key in have), default=0)
     for number in range(1, min(top, TORRENT_LAST_LESSON) + 1):
         if (number, "") in have:
             continue
         key = (number, "")
+        known = torrent_index.get(str(number), {})
         by_season[1][key] = ({
             "id": f"torrent-{number}",
-            "title": f"Lesson {number}",
+            "title": f"{known['title']} - Lesson {number}" if known.get("title") else f"Lesson {number}",
+            "_size": known.get("size"),
             "description": "",
             "lengthSeconds": 0,
             "thumbnailUrl": None,
@@ -217,6 +227,8 @@ def build(items, archive_lessons=None):
             })
             if item.get("_torrent"):
                 episodes[-1].update({"source": "torrent", "lesson": number_of(item["id"])})
+                if item.get("_size"):
+                    episodes[-1]["size"] = item["_size"]
             extra = item.get("_archive")
             if extra:
                 episodes[-1].update({
