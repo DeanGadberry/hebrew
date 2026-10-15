@@ -145,8 +145,18 @@ def main():
             key = lesson_key(path)
             if key:
                 index[f"{key[0]}{key[1]}"] = {"title": title_from(path), "size": size, "file": os.path.basename(path)}
+        # The creators number files in watching order ("003 - Review Game for
+        # Lessons 1-2"); keep that sequence for the catalog's course order.
+        order = []
+        for _, path, size in files:
+            name = os.path.basename(path)
+            m = re.match(r"^(\d+)\s*-\s*(.+?)\.\w+$", name)
+            if m and name.lower().endswith(VIDEO_EXT):
+                order.append({"seq": int(m.group(1)), "name": m.group(2), "size": size})
+        order.sort(key=lambda x: x["seq"])
         with open(args.write_index, "w", encoding="utf-8") as f:
-            json.dump({"torrent": TORRENTS[args.resolution][1], "lessons": index}, f, ensure_ascii=False, indent=1, sort_keys=True)
+            json.dump({"torrent": TORRENTS[args.resolution][1], "lessons": index, "order": order},
+                      f, ensure_ascii=False, indent=1, sort_keys=True)
             f.write("\n")
         print(f"Wrote {len(index)} lessons to {args.write_index}")
         return
