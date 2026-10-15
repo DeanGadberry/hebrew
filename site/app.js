@@ -27,6 +27,7 @@ const store = {
 const state = {
   catalog: null,
   season: store.get('season', 1),
+  order: store.get('order', 'course'), // 'course' (creators' watching order) or 'type'
   quality: store.get('quality', 'VIDEO_1080P'),
   search: '',
   selected: new Set(), // episode ids
@@ -73,19 +74,29 @@ function fold(text) {
   return text.normalize('NFKD').replace(/[\u0300-\u036f\u0591-\u05c7]/g, '').toLowerCase();
 }
 
+// Two ways to browse: "course" groups everything the way the TV app will
+// (Course / Worship & Songs / Extras, in watching order); "type" groups by kind.
+const courseView = () => state.order === 'course' && !!state.catalog.tvSeasons;
+const groups = () => (courseView() ? state.catalog.tvSeasons : state.catalog.seasons);
+const groupOf = (ep) => (courseView() ? ep.tvSeason : ep.season);
+const numberOf = (ep) => (courseView() ? ep.tvEpisode : ep.episode);
+const KIND = { 2: 'Review game', 3: 'Story', 4: 'Song' };
+
 function visibleEpisodes() {
   const q = fold(state.search.trim());
-  return state.catalog.episodes.filter((ep) => {
-    if (q) return fold(ep.title).includes(q) || fold(ep.label || '') === q || String(ep.episode) === q;
-    return ep.season === state.season;
-  });
+  return state.catalog.episodes
+    .filter((ep) => {
+      if (q) return fold(ep.title).includes(q) || fold(ep.label || '') === q || String(numberOf(ep)) === q;
+      return groupOf(ep) === state.season;
+    })
+    .sort((a, b) => (groupOf(a) - groupOf(b)) || (numberOf(a) - numberOf(b)));
 }
 
 function isSaved(id) { return (state.saved[state.quality] || []).includes(id); }
 
 function renderSeasons() {
   const el = $('seasons');
-  el.replaceChildren(...state.catalog.seasons.map((s) => {
+  el.replaceChildren(...groups().map((s) => {
     const b = document.createElement('button');
     b.className = 'chip';
     b.type = 'button';
@@ -121,12 +132,12 @@ function renderEpisodes() {
     img.alt = '';
     if (ep.thumbnail) img.src = ep.thumbnail;
 
-    const season = state.catalog.seasons.find((x) => x.number === ep.season);
     const text = document.createElement('div');
     text.className = 'text';
     const num = document.createElement('span');
     num.className = 'num';
-    num.textContent = state.search ? `${season.name} · ${ep.episode}` : String(ep.episode);
+    const group = groups().find((g) => g.number === groupOf(ep));
+    num.textContent = state.search ? `${group.name} · ${numberOf(ep)}` : String(numberOf(ep));
     const title = document.createElement('span');
     title.className = 'title';
     title.textContent = ep.title;
@@ -137,6 +148,7 @@ function renderEpisodes() {
 
     const tags = document.createElement('span');
     tags.className = 'tags';
+    if (courseView() && KIND[ep.season]) tags.insertAdjacentHTML('beforeend', `<span class="badge kind">${KIND[ep.season]}</span>`);
     if (ep.source === 'torrent') tags.insertAdjacentHTML('beforeend', '<span class="badge" title="Not downloadable here; see the note by the Download button">Not here</span>');
     if (ep.source === 'archive') tags.insertAdjacentHTML('beforeend', '<span class="badge" title="Not on Lets.Church; downloaded from the Internet Archive as 720p video">Archive 720p</span>');
     if (isSaved(ep.id)) tags.insertAdjacentHTML('beforeend', '<span class="saved" title="Downloaded in this browser before (at this quality)">✓</span>');
@@ -208,8 +220,9 @@ function renderTrim() {
     return;
   }
   const max = list.length;
-  if (state.trimSeason !== state.season || Number(lo.max) !== max) {
-    state.trimSeason = state.season;
+  const view = `${state.order}:${state.season}`;
+  if (state.trimSeason !== view || Number(lo.max) !== max) {
+    state.trimSeason = view;
     state.trimActive = false;
     lo.max = hi.max = String(max);
     lo.value = '1';
@@ -221,7 +234,7 @@ function renderTrim() {
   $('trim-fill').style.left = `${pct(a)}%`;
   $('trim-fill').style.right = `${100 - pct(b)}%`;
   $('trim').classList.toggle('active', !!state.trimActive);
-  const name = (ep) => ep.label || `Episode ${ep.episode}`;
+  const name = (ep) => ep.label || (ep.title.length > 34 ? `${ep.title.slice(0, 32)}…` : ep.title);
   const count = b - a + 1;
   $('trim-readout').textContent = state.trimActive
     ? `${name(list[a - 1])} → ${name(list[b - 1])} · ${count} episode${count === 1 ? '' : 's'}`
@@ -538,7 +551,19 @@ async function cleanLeftovers() {
 async function init() {
   const res = await fetch('catalog.json', { cache: 'no-cache' });
   state.catalog = await res.json();
-  if (!state.catalog.seasons.some((s) => s.number === state.season)) state.season = 1;
+  if (!groups().some((s) => s.number === state.season)) state.season = 1;
+  for (const b of document.querySelectorAll('#order button')) {
+    b.setAttribute('aria-pressed', String(b.dataset.order === state.order));
+    b.addEventListener('click', () => {
+      if (state.order === b.dataset.order) return;
+      state.order = b.dataset.order;
+      store.set('order', state.order);
+      state.season = 1;
+      store.set('season', 1);
+      for (const x of document.querySelectorAll('#order button')) x.setAttribute('aria-pressed', String(x === b));
+      render();
+    });
+  }
 
   $('quality').value = state.quality;
   $('relay').value = store.get('relay', '') || RELAY_URL;

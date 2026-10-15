@@ -67,6 +67,13 @@ h2 { font-size: 1.1rem; margin: 0; }
 }
 .notice.warn { background: color-mix(in srgb, var(--err) 12%, var(--surface)); }
 
+.order-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 2px; background: var(--surface-2); }
+.segmented button {
+  font: inherit; font-size: 0.9rem; border: 0; background: none; color: var(--text); padding: 6px 14px; border-radius: 999px; cursor: pointer;
+}
+.segmented button[aria-pressed="true"] { background: var(--surface); box-shadow: var(--shadow); font-weight: 600; }
+.badge.kind { background: var(--accent-soft); border-color: transparent; }
 .seasons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .chip {
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text);

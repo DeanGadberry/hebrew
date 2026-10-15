@@ -46,7 +46,7 @@ SEASONS = {
     5: "Extras",
 }
 
-LESSON_RE = re.compile(r"\bLesson (\d+)([a-z]?)\b")
+LESSON_RE = re.compile(r"\bLesson (\d+)([a-zA-Z]?)\b")
 REVIEW_RE = re.compile(r"Review Game", re.I)
 REVIEW_NUM_RE = re.compile(r"Lessons? (\d+)")
 STORY_RE = re.compile(r"\bEasy Story (\d+)\b")
@@ -117,6 +117,103 @@ def fetch_archive_lessons():
     return found
 
 
+TV_SEASONS = {1: "Course", 2: "Worship & Songs", 3: "Extras"}
+REVIEW_KEY_RE = re.compile(r"Lessons?\s*(\d+)(?:\s*[-–]\s*(\d+))?", re.I)
+
+
+def load_torrent_index():
+    try:
+        with open(TORRENT_INDEX, encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, ValueError):
+        return {}
+
+
+def title_words(text):
+    """English words of a title, for matching story/song names across sources."""
+    text = re.sub(r"[\u0590-\u05ff]+", " ", text or "")
+    text = re.sub(r"\b(easy stor(y|ies)|biblical hebrew|hebrew worship|free|lesson \d+[a-z]?|story \d+)\b", " ", text, flags=re.I)
+    return {w for w in re.findall(r"[a-z0-9]+", text.lower()) if len(w) > 1 and w not in {"the", "and", "of", "to", "a"}}
+
+
+def course_key(kind, title):
+    """Key that identifies the same lesson / review game in both sources."""
+    if kind == "lesson":
+        m = LESSON_RE.search(title)
+        return ("lesson", int(m.group(1)), m.group(2).lower()) if m else None
+    if kind == "review":
+        m = REVIEW_KEY_RE.search(title)
+        return ("review", int(m.group(1)), int(m.group(2) or m.group(1))) if m else None
+    return None
+
+
+def add_tv_order(episodes, order):
+    """Number every episode for the TV app.
+
+    Season 1 "Course" follows the creators' own watching order (the numbered
+    files in their torrent: lessons with their review games, stories and songs
+    in between). Episodes newer than the torrent follow by publish date.
+    Remaining songs and extras become seasons 2 and 3.
+    """
+    kind_of = {1: "lesson", 2: "review", 3: "story", 4: "worship", 5: "extra"}
+    main = [o for o in order if not o.get("folder")]
+    by_key, by_words = {}, []
+    for o in main:
+        name = o["name"]
+        if re.search(r"review game", name, re.I):
+            k = course_key("review", name)
+        elif LESSON_RE.search(name):
+            k = course_key("lesson", name)
+        else:
+            k = None
+        if k:
+            by_key.setdefault(k, o["seq"])
+        else:
+            by_words.append((o["seq"], title_words(name)))
+
+    placed, unplaced = [], []
+    used_seq = set()
+    for ep in episodes:
+        kind = kind_of[ep["season"]]
+        seq = None
+        k = course_key(kind, ep["sourceTitle"])
+        if k and k in by_key:
+            seq = by_key[k]
+        elif kind in ("story", "worship", "extra"):
+            words = title_words(ep["sourceTitle"])
+            best, best_score = None, 0.0
+            for s_, w in by_words:
+                if not words or not w or s_ in used_seq:
+                    continue
+                score = len(words & w) / len(words | w)
+                if score > best_score:
+                    best, best_score = s_, score
+            if best is not None and best_score >= 0.6:
+                seq = best
+        if seq is not None:
+            used_seq.add(seq)
+            placed.append((seq, ep))
+        elif kind in ("lesson", "review", "story"):
+            unplaced.append(ep)
+
+    course = [ep for _, ep in sorted(placed, key=lambda x: x[0])]
+    # Newer than the torrent: slot in after the last course item published before it.
+    for ep in sorted(unplaced, key=lambda e: e.get("publishedAt") or ""):
+        when = ep.get("publishedAt") or ""
+        at = len(course)
+        while at > 0 and (course[at - 1].get("publishedAt") or "") > when:
+            at -= 1
+        course.insert(at, ep)
+
+    in_course = {id(ep) for ep in course}
+    for n, ep in enumerate(course, 1):
+        ep["tvSeason"], ep["tvEpisode"] = 1, n
+    for season, kind in ((2, "worship"), (3, "extra")):
+        rest = [ep for ep in episodes if id(ep) not in in_course and kind_of[ep["season"]] == kind]
+        for n, ep in enumerate(rest, 1):
+            ep["tvSeason"], ep["tvEpisode"] = season, n
+
+
 def number_of(placeholder_id):
     return int(placeholder_id.rsplit("-", 1)[1])
 
@@ -146,7 +243,7 @@ def classify(item):
         return 3, (int(story.group(1)), published), f"Easy Story {story.group(1)}"
     lesson = LESSON_RE.search(title)
     if lesson:
-        number, suffix = int(lesson.group(1)), lesson.group(2)
+        number, suffix = int(lesson.group(1)), lesson.group(2).lower()
         return 1, (number, suffix), f"Lesson {number}{suffix}"
     if WORSHIP_RE.search(title):
         return 4, (published,), None
@@ -185,11 +282,7 @@ def build(items, archive_lessons=None):
     # Whatever is still missing comes from the creators' torrent (lessons 1-156),
     # fetched by the "Fetch missing lessons" workflow. Placeholders keep the
     # episode numbers stable and let the page offer them.
-    try:
-        with open(TORRENT_INDEX, encoding="utf-8") as f:
-            torrent_index = json.load(f)["lessons"]
-    except (FileNotFoundError, ValueError, KeyError):
-        torrent_index = {}
+    torrent_index = load_torrent_index().get("lessons", {})
     have = set(by_season[1])
     top = max((key[0] for key in have), default=0)
     for number in range(1, min(top, TORRENT_LAST_LESSON) + 1):
@@ -239,6 +332,7 @@ def build(items, archive_lessons=None):
                 })
 
     missing = sorted(e["lesson"] for e in episodes if e.get("source") == "torrent")
+    add_tv_order(episodes, load_torrent_index().get("order", []))
 
     return {
         "show": SHOW,
@@ -248,6 +342,12 @@ def build(items, archive_lessons=None):
         "seasons": [
             {"number": n, "name": name, "count": sum(1 for e in episodes if e["season"] == n)}
             for n, name in SEASONS.items()
+        ],
+        # How files are tagged for the TV app: one "Course" season in the
+        # creators' watching order, then the songs and extras left over.
+        "tvSeasons": [
+            {"number": n, "name": name, "count": sum(1 for e in episodes if e["tvSeason"] == n)}
+            for n, name in TV_SEASONS.items()
         ],
         # Lesson numbers neither Lets.Church nor the Internet Archive items have;
         # they're listed as "torrent" episodes (see .github/workflows/fetch-missing.yml).

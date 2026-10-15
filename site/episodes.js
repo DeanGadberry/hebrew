@@ -23,10 +23,20 @@ export function qualityFor(ep, quality) {
 
 export function pad(n, width) { return String(n).padStart(width, '0'); }
 
+// Files are numbered for the TV app by the course order (catalog.tvSeasons):
+// season 1 "Course" interleaves lessons, review games and stories the way the
+// creators sequence them, whatever way the page is being browsed.
+export function tvPlace(catalog, ep) {
+  if (ep.tvSeason && catalog.tvSeasons) {
+    return { season: catalog.tvSeasons.find((s) => s.number === ep.tvSeason), number: ep.tvSeason, episode: ep.tvEpisode };
+  }
+  return { season: catalog.seasons.find((s) => s.number === ep.season), number: ep.season, episode: ep.episode };
+}
+
 export function episodeFilename(catalog, ep, requested) {
   const quality = qualityFor(ep, requested);
-  const season = catalog.seasons.find((s) => s.number === ep.season);
-  const width = Math.max(2, String(season.count).length);
+  const place = tvPlace(catalog, ep);
+  const width = Math.max(2, String(place.season.count).length);
   // ASCII only: some browsers drop the whole name otherwise. The tags keep the full title.
   const safe = ep.title
     .replace(/[\u2013\u2014\u05be]/g, '-')
@@ -38,12 +48,13 @@ export function episodeFilename(catalog, ep, requested) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 120);
-  return `${catalog.show} - S${pad(ep.season, 2)}E${pad(ep.episode, width)} - ${safe}.${QUALITY[quality].ext}`;
+  return `${catalog.show} - S${pad(place.number, 2)}E${pad(place.episode, width)} - ${safe}.${QUALITY[quality].ext}`;
 }
 
 export function episodeMetadata(catalog, ep, requested) {
   const quality = qualityFor(ep, requested);
-  const season = catalog.seasons.find((s) => s.number === ep.season);
+  const place = tvPlace(catalog, ep);
+  const season = place.season;
   const show = catalog.show;
   const common = {
     title: ep.title,
@@ -57,7 +68,7 @@ export function episodeMetadata(catalog, ep, requested) {
     encoder: 'Aleph with Beth Offline',
   };
   if (quality === 'AUDIO') {
-    return { ...common, mediaKind: MEDIA_KIND.music, album: `${show} – ${season.name}`, track: ep.episode, trackTotal: season.count, comment: ep.description || undefined };
+    return { ...common, mediaKind: MEDIA_KIND.music, album: `${show} – ${season.name}`, track: place.episode, trackTotal: season.count, comment: ep.description || undefined };
   }
   return {
     ...common,
@@ -65,9 +76,9 @@ export function episodeMetadata(catalog, ep, requested) {
     album: `${show}, ${season.name}`,
     show,
     showSort: show,
-    season: ep.season,
-    episode: ep.episode,
-    episodeId: ep.label || `S${pad(ep.season, 2)}E${pad(ep.episode, 3)}`,
+    season: place.number,
+    episode: place.episode,
+    episodeId: ep.label || `S${pad(place.number, 2)}E${pad(place.episode, 3)}`,
     hdVideo: QUALITY[quality].hd,
   };
 }

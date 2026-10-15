@@ -156,6 +156,6 @@ test('scripts/tag.mjs tags a torrent lesson from the catalog', async () => {
   assert.match(out, new RegExp(`S01E\\d+ - Lesson ${ep.lesson} - Where Is Joseph\\.m4v$`));
   const tags = probe(out, ['-show_entries', 'format_tags']).format.tags;
   assert.equal(tags.show, 'Aleph with Beth');
-  assert.equal(tags.episode_sort, String(ep.episode));
+  assert.equal(tags.episode_sort, String(ep.tvEpisode ?? ep.episode));
   assert.equal(tags.title, `Lesson ${ep.lesson} – Where Is Joseph`);
 });
