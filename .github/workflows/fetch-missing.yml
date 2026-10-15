@@ -1,0 +1,48 @@
+# Fetches lessons that only exist in the creators' torrent
+# (https://freehebrew.online/offline/), tags them like the web page does, and
+# hands them back as a zip on the run page. Nothing is kept: the zip expires.
+#
+# Actions → "Fetch missing lessons" → Run workflow. The defaults fetch every
+# lesson the page marks "Torrent".
+
+name: Fetch missing lessons
+
+on:
+  workflow_dispatch:
+    inputs:
+      lessons:
+        description: 'Lessons to fetch: "missing" for all of them, or e.g. 68,72,74'
+        default: missing
+        required: true
+      resolution:
+        description: Torrent to take them from
+        type: choice
+        options: [1080p, 720p, 480p]
+        default: 1080p
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -q && sudo apt-get install -yq aria2 ffmpeg
+      - name: Download and tag
+        run: >-
+          python3 scripts/torrent_fetch.py
+          --lessons "${{ inputs.lessons }}"
+          --resolution "${{ inputs.resolution }}"
+          --work "$RUNNER_TEMP/torrent" --out tagged
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aleph-with-beth-missing-lessons-${{ inputs.resolution }}
+          path: tagged/
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error

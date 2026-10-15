@@ -1,0 +1,107 @@
+# Tests, then deploys the relay (Cloudflare Worker) and publishes the page to
+# GitHub Pages — which shows up at https://www.deangadberry.com/hebrew/
+# because the DeanGadberry.github.io site owns that domain.
+#
+# Runs on every push to main, nightly (to pick up new episodes), and by hand.
+#
+# Optional repository secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   token from the "Edit Cloudflare Workers" template
+#   CLOUDFLARE_ACCOUNT_ID  shown on the Cloudflare dashboard's Workers page
+# Without them the page is still published, using the RELAY_URL repository
+# variable if set.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -q && sudo apt-get install -yq ffmpeg
+      - run: npm test
+
+  relay:
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.url.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for Cloudflare credentials
+        id: creds
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$ACCOUNT" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"
+          else echo "::warning::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID not set; skipping relay deploy"; fi
+      - name: Deploy relay
+        id: deploy
+        if: steps.creds.outputs.ok == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: relay
+          command: deploy
+      - name: Relay address
+        id: url
+        env:
+          DEPLOYED: ${{ steps.deploy.outputs.deployment-url }}
+          OUTPUT: ${{ steps.deploy.outputs.command-output }}
+          FALLBACK: ${{ vars.RELAY_URL }}
+        run: |
+          url="$DEPLOYED"
+          if [ -z "$url" ]; then url=$(printf '%s' "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' | head -1); fi
+          if [ -z "$url" ]; then url="$FALLBACK"; fi
+          if [ -n "$url" ]; then
+            curl -fsS "$url/v1/health" && echo
+          else
+            echo "::warning::No relay address yet — the page will ask for one in Settings"
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+  pages:
+    needs: relay
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh episode list
+        run: python3 scripts/build_catalog.py site/catalog.json || echo "::warning::Catalog refresh failed; publishing the committed copy"
+      - name: Point the page at the relay
+        env:
+          RELAY_URL: ${{ needs.relay.outputs.url }}
+        run: |
+          printf "export const RELAY_URL = '%s';\nexport const REPO_URL = '%s';\n" "$RELAY_URL" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" > site/config.js
+          cat site/config.js
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+        continue-on-error: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

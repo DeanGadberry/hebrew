@@ -2,12 +2,12 @@
  "show": "Aleph with Beth",
  "channel": "https://lets.church/channel/AlephwithBeth",
  "license": "Public domain (freely given, Matt 10:8)",
- "generatedAt": "2026-10-15T21:53:55+00:00",
+ "generatedAt": "2026-10-15T21:59:58+00:00",
  "seasons": [
   {
    "number": 1,
    "name": "Lessons",
-   "count": 179
+   "count": 201
   },
   {
    "number": 2,
@@ -32,15 +32,21 @@
  ],
  "missingLessons": [
   68,
+  70,
   72,
+  73,
   74,
   78,
   81,
+  82,
+  83,
   84,
+  87,
   92,
   93,
   94,
   95,
+  99,
   116,
   119,
   122,
@@ -1219,9 +1225,24 @@
    "thumbnail": "https://images.letschurch.cloud/ViLK7RB3S-oXh6lkz8iWgLvRFyJXt3tJqrVQJiCAE00/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC9hZGJlMTA2YS0yYzY0LTRjNTQtYTkwOS02ZWEzZTU4NTBkYTEvdGh1bWJuYWlsLVI3akFqRWp2NFpISElmMWlCLWRZRS53ZWJw"
   },
   {
-   "id": "qhTibZgCHMRsweWjA81dc1",
+   "id": "torrent-68",
    "season": 1,
    "episode": 86,
+   "label": "Lesson 68",
+   "title": "Lesson 68",
+   "sourceTitle": "Lesson 68",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 68
+  },
+  {
+   "id": "qhTibZgCHMRsweWjA81dc1",
+   "season": 1,
+   "episode": 87,
    "label": "Lesson 69",
    "title": "Lesson 69 – הָאִשָּׁה אֲשֶׁר הָרְגָה אֶת־סִיסְרָא - The woman who killed Sisera",
    "sourceTitle": "Hebrew - הָאִשָּׁה אֲשֶׁר הָרְגָה אֶת־סִיסְרָא - The woman who killed Sisera - Lesson 69",
@@ -1232,9 +1253,24 @@
    "thumbnail": "https://images.letschurch.cloud/RJZKyvtQEMmn3M1wr-9Q-VWK_2KFlB1S7YH4wG0cA00/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC9jNGI2ZDczNi0zMjZmLTQ2NTYtODVjMS1kNTM5YjdhNmRiNWUvdGh1bWJuYWlsLWFYWEZzY1lWajBFcVFuVkxDWXBQMC5qcGVn"
   },
   {
+   "id": "torrent-70",
+   "season": 1,
+   "episode": 88,
+   "label": "Lesson 70",
+   "title": "Lesson 70",
+   "sourceTitle": "Lesson 70",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 70
+  },
+  {
    "id": "7JFRJPRiPnXbgTBdcNvhdT",
    "season": 1,
-   "episode": 87,
+   "episode": 89,
    "label": "Lesson 70b",
    "title": "Lesson 70b – Intro to pausal forms & disjunctive accents",
    "sourceTitle": "Hebrew - Intro to pausal forms & disjunctive accents - Biblical Hebrew - Lesson 70b",
@@ -1247,7 +1283,7 @@
   {
    "id": "5Ng2UJn61PrVm7ws1x8De3",
    "season": 1,
-   "episode": 88,
+   "episode": 90,
    "label": "Lesson 71",
    "title": "Lesson 71 – Vayyiqtol forms 4: feminine plural",
    "sourceTitle": "Hebrew - Vayyiqtol forms 4: feminine plural - Biblical Hebrew - Lesson 71",
@@ -1258,9 +1294,39 @@
    "thumbnail": "https://images.letschurch.cloud/g_n3-uHEhoBuSEqrSAUiCb_FC3DfXzdtU5wRHCML55Y/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC8yNmRhMDg0Yy1lY2NjLTQzNDEtOTc0Yy0yOWRjN2JkYTZjYjAvdGh1bWJuYWlsLXM3RllCdzNVN1ZNbmFzOTZIY1VBRC5qcGVn"
   },
   {
+   "id": "torrent-72",
+   "season": 1,
+   "episode": 91,
+   "label": "Lesson 72",
+   "title": "Lesson 72",
+   "sourceTitle": "Lesson 72",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 72
+  },
+  {
+   "id": "torrent-73",
+   "season": 1,
+   "episode": 92,
+   "label": "Lesson 73",
+   "title": "Lesson 73",
+   "sourceTitle": "Lesson 73",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 73
+  },
+  {
    "id": "fpfdcnwSqLAUpFgEVYRFTP",
    "season": 1,
-   "episode": 89,
+   "episode": 93,
    "label": "Lesson 73b",
    "title": "Lesson 73b – More Bible Passages",
    "sourceTitle": "Hebrew - More Bible Passages - Biblical Hebrew - Lesson 73b",
@@ -1271,9 +1337,24 @@
    "thumbnail": "https://images.letschurch.cloud/RfsUCaNAQQyGzi10W3zuIXlxWM65l3uDAqDR9kgEbxY/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC83NDllY2UyYi0wN2Q3LTRkMGQtYmI1Ni03ZDkwZTNjMWViODEvdGh1bWJuYWlsLUY1TThpa3ljY09ObWJxbTVGZGNtRS5qcGVn"
   },
   {
+   "id": "torrent-74",
+   "season": 1,
+   "episode": 94,
+   "label": "Lesson 74",
+   "title": "Lesson 74",
+   "sourceTitle": "Lesson 74",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 74
+  },
+  {
    "id": "uuWQbvk8gPsfjocoaFsLBK",
    "season": 1,
-   "episode": 90,
+   "episode": 95,
    "label": "Lesson 75",
    "title": "Lesson 75 – Participles 1: singular",
    "sourceTitle": "Hebrew - Participles 1: singular - Biblical Hebrew - Lesson 75",
@@ -1286,7 +1367,7 @@
   {
    "id": "2eHK9GScHt2fUFirzAHTvr",
    "season": 1,
-   "episode": 91,
+   "episode": 96,
    "label": "Lesson 76",
    "title": "Lesson 76 – Participles 2: in context",
    "sourceTitle": "Hebrew - Participles 2: in context - Biblical Hebrew - Lesson 76",
@@ -1299,7 +1380,7 @@
   {
    "id": "9Qg1UbT8XXgGCL18eG8uLj",
    "season": 1,
-   "episode": 92,
+   "episode": 97,
    "label": "Lesson 77",
    "title": "Lesson 77 – Participles 3: plural",
    "sourceTitle": "Hebrew - Participles 3: plural - Biblical Hebrew - Lesson 77",
@@ -1310,9 +1391,24 @@
    "thumbnail": "https://images.letschurch.cloud/38Z-P8JTFb390HuRXhNrOUMNpHOHjoowEgYKLSfEAxc/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC80Nzg2MTA1YS01ZTgxLTQ2MTYtODc4ZS0zZDBlODFlNmZjNzIvdGh1bWJuYWlsLVAtMnF2LVRDMzNTWjU1YnVaRkd2TS5qcGVn"
   },
   {
+   "id": "torrent-78",
+   "season": 1,
+   "episode": 98,
+   "label": "Lesson 78",
+   "title": "Lesson 78",
+   "sourceTitle": "Lesson 78",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 78
+  },
+  {
    "id": "tKdhvW8e9twkjavnSYZRwb",
    "season": 1,
-   "episode": 93,
+   "episode": 99,
    "label": "Lesson 79",
    "title": "Lesson 79 – Participles 4: 3-ה verbs & 2-ו verbs",
    "sourceTitle": "Hebrew - Participles 4: 3-ה verbs & 2-ו verbs - Lesson 79",
@@ -1325,7 +1421,7 @@
   {
    "id": "bMB7RFgj49yWa7kaWYShRy",
    "season": 1,
-   "episode": 94,
+   "episode": 100,
    "label": "Lesson 80",
    "title": "Lesson 80 – אַבְרָם וְהַלֶּחֶם - Avram & the Bread",
    "sourceTitle": "Hebrew - אַבְרָם וְהַלֶּחֶם - Avram & the Bread - Biblical Hebrew - Lesson 80",
@@ -1336,9 +1432,39 @@
    "thumbnail": "https://images.letschurch.cloud/pLWyV5eIK_JdqQ8wXY3PHVWlYS2PoBaEDjdYHl2Uoks/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC81NzU5N2ZhNS04MTRmLTQ3YTQtOWFmOC0xNTQ0OGJjZWVjNGEvdGh1bWJuYWlsLUV5eGJSd2piMzBNakVvT0xhR3ZRei5qcGVn"
   },
   {
+   "id": "torrent-81",
+   "season": 1,
+   "episode": 101,
+   "label": "Lesson 81",
+   "title": "Lesson 81",
+   "sourceTitle": "Lesson 81",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 81
+  },
+  {
+   "id": "torrent-82",
+   "season": 1,
+   "episode": 102,
+   "label": "Lesson 82",
+   "title": "Lesson 82",
+   "sourceTitle": "Lesson 82",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 82
+  },
+  {
    "id": "iuapC1uuVgEZsBxfVTnjT8",
    "season": 1,
-   "episode": 95,
+   "episode": 103,
    "label": "Lesson 82b",
    "title": "Lesson 82b – Terah leaves Ur of the Chaldeans - תֶּרַח יֹצֵא מֵאוּר כַּשְׂדִּים",
    "sourceTitle": "Terah leaves Ur of the Chaldeans - תֶּרַח יֹצֵא מֵאוּר כַּשְׂדִּים - Biblical Hebrew - Lesson 82b",
@@ -1349,9 +1475,24 @@
    "thumbnail": "https://images.letschurch.cloud/4XHQ8Tk6QncA8lLbDs2ENfuikHfeRz4iVIhsAVqwodk/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC84ZDk5ZmFlZS1kYjhhLTRhMWQtOTQ4OS1kNjQyNjI1N2I5YjUvdGh1bWJuYWlsLUNhc2ZVNTFUZHd0YjllNXp5Z2x0Mi53ZWJw"
   },
   {
+   "id": "torrent-83",
+   "season": 1,
+   "episode": 104,
+   "label": "Lesson 83",
+   "title": "Lesson 83",
+   "sourceTitle": "Lesson 83",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 83
+  },
+  {
    "id": "v7PvEdUdK3MKZfKjM22V2P",
    "season": 1,
-   "episode": 96,
+   "episode": 105,
    "label": "Lesson 83b",
    "title": "Lesson 83b – The Gift for Esau - הַמִּנְחָה לְעֵשָׂו",
    "sourceTitle": "Hebrew - The Gift for Esau - הַמִּנְחָה לְעֵשָׂו - Biblical Hebrew - Lesson 83b",
@@ -1362,9 +1503,24 @@
    "thumbnail": "https://images.letschurch.cloud/wXxlqfjbteEVIPVfrLXDxNe6BAfrKx4Eo0TWJbNKT_4/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC9lYmNjYzM4MC01NTg3LTQzOWUtYTk0Ny05ZTIyNTU0ZGFkMzUvdGh1bWJuYWlsLVV0R1VTOW91bjRfcXNFNi13Q282cC53ZWJw"
   },
   {
+   "id": "torrent-84",
+   "season": 1,
+   "episode": 106,
+   "label": "Lesson 84",
+   "title": "Lesson 84",
+   "sourceTitle": "Lesson 84",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 84
+  },
+  {
    "id": "rhcrG87rUG3fV7eLndZbaH",
    "season": 1,
-   "episode": 97,
+   "episode": 107,
    "label": "Lesson 85",
    "title": "Lesson 85 – Life & Death",
    "sourceTitle": "Hebrew - Life & Death - Biblical Hebrew - Lesson 85",
@@ -1377,7 +1533,7 @@
   {
    "id": "sMW8Ncyjv6ZAAhCgjehitN",
    "season": 1,
-   "episode": 98,
+   "episode": 108,
    "label": "Lesson 85b",
    "title": "Lesson 85b – A way that seems right - Proverbs 16:25",
    "sourceTitle": "Hebrew - A way that seems right - Proverbs 16:25 - Biblical Hebrew - Lesson 85b",
@@ -1390,7 +1546,7 @@
   {
    "id": "3YkKeaAedPwsgmhvWDP8Dq",
    "season": 1,
-   "episode": 99,
+   "episode": 109,
    "label": "Lesson 86",
    "title": "Lesson 86 – Conceive & Give Birth",
    "sourceTitle": "Hebrew - Conceive & Give Birth - Biblical Hebrew - Lesson 86",
@@ -1401,9 +1557,24 @@
    "thumbnail": "https://images.letschurch.cloud/dZOB8gnUmdxxv7CW7ob4QVs3k6_9OPua_Hw7HF_7qo4/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC8xODEwMThjZi0wODg1LTQwMjEtYTQ3Zi01M2QwNGNlNTY0MWUvdGh1bWJuYWlsLU9NckJFSlZ3QWhoUGRFclJweC1oMS5qcGVn"
   },
   {
+   "id": "torrent-87",
+   "season": 1,
+   "episode": 110,
+   "label": "Lesson 87",
+   "title": "Lesson 87",
+   "sourceTitle": "Lesson 87",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 87
+  },
+  {
    "id": "sERm5yapECxzsjA6e1MuzD",
    "season": 1,
-   "episode": 100,
+   "episode": 111,
    "label": "Lesson 87b",
    "title": "Lesson 87b – Vocab Review: Verb or Noun?",
    "sourceTitle": "Biblical Hebrew - Vocab Review: Verb or Noun? - Lesson 87b",
@@ -1416,7 +1587,7 @@
   {
    "id": "kwrmJeumn9igsigvozqfcz",
    "season": 1,
-   "episode": 101,
+   "episode": 112,
    "label": "Lesson 88",
    "title": "Lesson 88 – Participles 5: 3-gutturals and Pi'el verbs",
    "sourceTitle": "Hebrew - Participles 5: 3-gutturals and Pi'el verbs - Biblical Hebrew - Lesson 88",
@@ -1429,7 +1600,7 @@
   {
    "id": "1rU42i9Zbrt9n6nKsUv64N",
    "season": 1,
-   "episode": 102,
+   "episode": 113,
    "label": "Lesson 89",
    "title": "Lesson 89 – Participles 6: Negatives and \"Still\"",
    "sourceTitle": "Hebrew - Participles 6: Negatives and \"Still\" - Biblical Hebrew - Lesson 89",
@@ -1442,7 +1613,7 @@
   {
    "id": "fjJ1hJUcMhAy32oaKW6uV8",
    "season": 1,
-   "episode": 103,
+   "episode": 114,
    "label": "Lesson 90",
    "title": "Lesson 90 – Tell me!",
    "sourceTitle": "Hebrew - Tell me! - Biblical Hebrew - Lesson 90",
@@ -1455,7 +1626,7 @@
   {
    "id": "6hhhHZB3FZHbU28k63vFbK",
    "season": 1,
-   "episode": 104,
+   "episode": 115,
    "label": "Lesson 91",
    "title": "Lesson 91 – 1 Samuel 3 story",
    "sourceTitle": "Hebrew - 1 Samuel 3 story - Biblical Hebrew - Lesson 91",
@@ -1468,7 +1639,7 @@
   {
    "id": "phGJr4eSstowXckyjESn6j",
    "season": 1,
-   "episode": 105,
+   "episode": 116,
    "label": "Lesson 91b",
    "title": "Lesson 91b – Samson sees a Philistine woman",
    "sourceTitle": "Hebrew - Samson sees a Philistine woman - Biblical Hebrew - Lesson 91b",
@@ -1479,9 +1650,69 @@
    "thumbnail": "https://images.letschurch.cloud/S3BVUtwnHL192eeJi1ddZUouGey0i0h23h-SQlsCL40/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC9iYzk3MzBmNC04ZGU1LTQzZDAtYTNjMy1iZjk0NGFjYjhmMTgvdGh1bWJuYWlsLVhBaVpENGJjSTdsYnFTZWxEaFFkby53ZWJw"
   },
   {
+   "id": "torrent-92",
+   "season": 1,
+   "episode": 117,
+   "label": "Lesson 92",
+   "title": "Lesson 92",
+   "sourceTitle": "Lesson 92",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 92
+  },
+  {
+   "id": "torrent-93",
+   "season": 1,
+   "episode": 118,
+   "label": "Lesson 93",
+   "title": "Lesson 93",
+   "sourceTitle": "Lesson 93",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 93
+  },
+  {
+   "id": "torrent-94",
+   "season": 1,
+   "episode": 119,
+   "label": "Lesson 94",
+   "title": "Lesson 94",
+   "sourceTitle": "Lesson 94",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 94
+  },
+  {
+   "id": "torrent-95",
+   "season": 1,
+   "episode": 120,
+   "label": "Lesson 95",
+   "title": "Lesson 95",
+   "sourceTitle": "Lesson 95",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 95
+  },
+  {
    "id": "qGqdKVmEEZzVGWWRQyucjk",
    "season": 1,
-   "episode": 106,
+   "episode": 121,
    "label": "Lesson 96",
    "title": "Lesson 96 – Yiqtol 2: In context",
    "sourceTitle": "Hebrew - Yiqtol 2: In context - Biblical Hebrew - Lesson 96",
@@ -1494,7 +1725,7 @@
   {
    "id": "8o9e8hwQqbtzMjDhUtTVpx",
    "season": 1,
-   "episode": 107,
+   "episode": 122,
    "label": "Lesson 97",
    "title": "Lesson 97 – Yiqtol 3: Weak Verbs",
    "sourceTitle": "Hebrew - Yiqtol 3: Weak Verbs - Biblical Hebrew - Lesson 97",
@@ -1507,7 +1738,7 @@
   {
    "id": "krQTnLkdYarGmd87fX9wS6",
    "season": 1,
-   "episode": 108,
+   "episode": 123,
    "label": "Lesson 98",
    "title": "Lesson 98 – Ask & Answer",
    "sourceTitle": "Hebrew - Ask & Answer - Biblical Hebrew - Lesson 98",
@@ -1520,7 +1751,7 @@
   {
    "id": "pQHVZnh55ES7szAuHN3Ja9",
    "season": 1,
-   "episode": 109,
+   "episode": 124,
    "label": "Lesson 98b",
    "title": "Lesson 98b – A New Name for Jacob",
    "sourceTitle": "Hebrew - A New Name for Jacob - Biblical Hebrew - Lesson 98b",
@@ -1531,9 +1762,24 @@
    "thumbnail": "https://images.letschurch.cloud/tJGszuAoUHGBe74RDcFABBesz9BrjvA4DLhXS18UyPo/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC9jMTBmYmIxZi0wMjE1LTQ5Y2MtYTZhNS1mODk0OTY4YjRlY2EvdGh1bWJuYWlsLUdpa0hNZUhoR0lLRG5PWDQwWnhHNi53ZWJw"
   },
   {
+   "id": "torrent-99",
+   "season": 1,
+   "episode": 125,
+   "label": "Lesson 99",
+   "title": "Lesson 99",
+   "sourceTitle": "Lesson 99",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 99
+  },
+  {
    "id": "wQ9TaxULcXapKCqrFy4Khn",
    "season": 1,
-   "episode": 110,
+   "episode": 126,
    "label": "Lesson 99b",
    "title": "Lesson 99b – War Between Judah and Israel",
    "sourceTitle": "Hebrew - War Between Judah and Israel - Biblical Hebrew - Lesson 99b",
@@ -1546,7 +1792,7 @@
   {
    "id": "9FDogttYaucoK7kS6YEi6y",
    "season": 1,
-   "episode": 111,
+   "episode": 127,
    "label": "Lesson 100",
    "title": "Lesson 100 – Who Will Reign After David? - 1 Kings 1",
    "sourceTitle": "Hebrew - Who Will Reign After David? - 1 Kings 1 - Biblical Hebrew - Lesson 100",
@@ -1559,7 +1805,7 @@
   {
    "id": "wdSmdvuQJ9XKV7ikRk6gMf",
    "season": 1,
-   "episode": 112,
+   "episode": 128,
    "label": "Lesson 101",
    "title": "Lesson 101 – One of the Flock",
    "sourceTitle": "Hebrew - One of the Flock - Biblical Hebrew - Lesson 101",
@@ -1572,7 +1818,7 @@
   {
    "id": "8h7Ac8tQmSAGrfFjxfXXHd",
    "season": 1,
-   "episode": 113,
+   "episode": 129,
    "label": "Lesson 102",
    "title": "Lesson 102 – Command",
    "sourceTitle": "Hebrew - Command - Biblical Hebrew - Lesson 102",
@@ -1585,7 +1831,7 @@
   {
    "id": "vMgqf3Tp1ykqFpPfaCD9gp",
    "season": 1,
-   "episode": 114,
+   "episode": 130,
    "label": "Lesson 103",
    "title": "Lesson 103 – Noah the Righteous Man",
    "sourceTitle": "Hebrew - Noah the Righteous Man - Biblical Hebrew - Lesson 103",
@@ -1598,7 +1844,7 @@
   {
    "id": "utc5vCNbJ11U2sx4UmK4To",
    "season": 1,
-   "episode": 115,
+   "episode": 131,
    "label": "Lesson 104",
    "title": "Lesson 104 – Tribes & Clans",
    "sourceTitle": "Hebrew - Tribes & Clans - Biblical Hebrew - Lesson 104",
@@ -1611,7 +1857,7 @@
   {
    "id": "wKd27JQHcPnksHP5ZKfpKM",
    "season": 1,
-   "episode": 116,
+   "episode": 132,
    "label": "Lesson 104b",
    "title": "Lesson 104b – Twelve Stones for Twelve Tribes",
    "sourceTitle": "Hebrew - Twelve Stones for Twelve Tribes - Biblical Hebrew - Lesson 104b",
@@ -1624,7 +1870,7 @@
   {
    "id": "nUhB8wjcsinmBiN8cCyDVi",
    "season": 1,
-   "episode": 117,
+   "episode": 133,
    "label": "Lesson 105",
    "title": "Lesson 105 – Inheritance & Tribal Allotments",
    "sourceTitle": "Hebrew - Inheritance & Tribal Allotments - Biblical Hebrew - Lesson 105",
@@ -1637,7 +1883,7 @@
   {
    "id": "suimBG3q8X6JQmkDE71gDq",
    "season": 1,
-   "episode": 118,
+   "episode": 134,
    "label": "Lesson 106",
    "title": "Lesson 106 – Full & Fill",
    "sourceTitle": "Hebrew - Full & Fill - Biblical Hebrew - Lesson 106",
@@ -1650,7 +1896,7 @@
   {
    "id": "64KbetgbvkEWkyEPxYMnLg",
    "season": 1,
-   "episode": 119,
+   "episode": 135,
    "label": "Lesson 106b",
    "title": "Lesson 106b – Ecclesiastes 11:5",
    "sourceTitle": "Hebrew - Ecclesiastes 11:5 - Biblical Hebrew - Lesson 106b",
@@ -1663,7 +1909,7 @@
   {
    "id": "61Yypdx6BgGMqxP4C1zsJ4",
    "season": 1,
-   "episode": 120,
+   "episode": 136,
    "label": "Lesson 107",
    "title": "Lesson 107 – Fill (Pi'el Verb) & Intro to Binyanim",
    "sourceTitle": "Hebrew - Fill (Pi'el Verb) & Intro to Binyanim - Biblical Hebrew - Lesson 107",
@@ -1676,7 +1922,7 @@
   {
    "id": "43jKwD66SGGomX7ErhXKGo",
    "season": 1,
-   "episode": 121,
+   "episode": 137,
    "label": "Lesson 108",
    "title": "Lesson 108 – Making the Tabernacle - הַמִּשְׁכָּן",
    "sourceTitle": "Hebrew - Making the Tabernacle - הַמִּשְׁכָּן - Biblical Hebrew - Lesson 108",
@@ -1689,7 +1935,7 @@
   {
    "id": "mhvvxMiwA3oawRRMEsWRYD",
    "season": 1,
-   "episode": 122,
+   "episode": 138,
    "label": "Lesson 109",
    "title": "Lesson 109 – Holy Things & His Holy Mountain",
    "sourceTitle": "Holy Things & His Holy Mountain - Biblical Hebrew - Lesson 109",
@@ -1702,7 +1948,7 @@
   {
    "id": "rTaH8hmG9X3ZxDJ3RhZQJE",
    "season": 1,
-   "episode": 123,
+   "episode": 139,
    "label": "Lesson 110",
    "title": "Lesson 110 – Holy the Adjective, Meteg, Silluq & Hatef Qamets",
    "sourceTitle": "Hebrew - Holy the Adjective, Meteg, Silluq & Hatef Qamets - Biblical Hebrew - Lesson 110",
@@ -1715,7 +1961,7 @@
   {
    "id": "s62aBUHSaw9y5tmLLMzZ44",
    "season": 1,
-   "episode": 124,
+   "episode": 140,
    "label": "Lesson 111",
    "title": "Lesson 111 – Don't do it! Negative Commands with אַל־",
    "sourceTitle": "Hebrew - Don't do it! Negative Commands with אַל־ - Biblical Hebrew - Lesson 111",
@@ -1728,7 +1974,7 @@
   {
    "id": "d9rAVvNcP3mf65wLq9XYRN",
    "season": 1,
-   "episode": 125,
+   "episode": 141,
    "label": "Lesson 112",
    "title": "Lesson 112 – Abraham and his Son part 1",
    "sourceTitle": "Abraham and his Son part 1 - Biblical Hebrew - Lesson 112",
@@ -1741,7 +1987,7 @@
   {
    "id": "bjLpx7fTW93zeCZLNSdWdk",
    "season": 1,
-   "episode": 126,
+   "episode": 142,
    "label": "Lesson 113",
    "title": "Lesson 113 – Love & Hate",
    "sourceTitle": "Hebrew - Love & Hate - Biblical Hebrew - Lesson 113",
@@ -1754,7 +2000,7 @@
   {
    "id": "1UxDyBhAiJ8bkmNVc89i85",
    "season": 1,
-   "episode": 127,
+   "episode": 143,
    "label": "Lesson 114",
    "title": "Lesson 114 – יְמֵי חַיֵּי יַעֲקֹב - The Days of the Life of Jacob",
    "sourceTitle": "Biblical Hebrew - יְמֵי חַיֵּי יַעֲקֹב - The Days of the Life of Jacob - Lesson 114",
@@ -1767,7 +2013,7 @@
   {
    "id": "k4yS2WFaUAV5YBp8xyZrt2",
    "season": 1,
-   "episode": 128,
+   "episode": 144,
    "label": "Lesson 115",
    "title": "Lesson 115 – Alone & Together",
    "sourceTitle": "Hebrew - Alone & Together - Biblical Hebrew - Lesson 115",
@@ -1778,9 +2024,24 @@
    "thumbnail": "https://images.letschurch.cloud/tOCJKLXfrGDaGIsf1zq0Cj6PY9qs3lYgulZ5ztlbsak/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC85YTVkMWU0MC1iYmI5LTRkZDgtYmViYS0wZjQyMjkxMTZhMmIvdGh1bWJuYWlsLVhRbGdsaE5TSzNhaTZzWEhjbUpxVi5qcGVn"
   },
   {
+   "id": "torrent-116",
+   "season": 1,
+   "episode": 145,
+   "label": "Lesson 116",
+   "title": "Lesson 116",
+   "sourceTitle": "Lesson 116",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 116
+  },
+  {
    "id": "ryagVop3diKizJeLkzaU1p",
    "season": 1,
-   "episode": 129,
+   "episode": 146,
    "label": "Lesson 117",
    "title": "Lesson 117 – Cause to Go Up and Down - Causative Hiph'il Verbs 1",
    "sourceTitle": "Cause to Go Up and Down - Causative Hiph'il Verbs 1 - Biblical Hebrew - Lesson 117",
@@ -1793,7 +2054,7 @@
   {
    "id": "rbqy8tgM1NYuVaYiNUKw3t",
    "season": 1,
-   "episode": 130,
+   "episode": 147,
    "label": "Lesson 118",
    "title": "Lesson 118 – Abraham and His Son part 2",
    "sourceTitle": "Abraham and His Son part 2 - Biblical Hebrew - Lesson 118",
@@ -1806,7 +2067,7 @@
   {
    "id": "i6DGuouM98A5f1NiaEUo3m",
    "season": 1,
-   "episode": 131,
+   "episode": 148,
    "label": "Lesson 118b",
    "title": "Lesson 118b – People Making Burnt Offerings - אֲנָשִׁים מַעֲלִים עֹלוֹת",
    "sourceTitle": "People Making Burnt Offerings - אֲנָשִׁים מַעֲלִים עֹלוֹת - Biblical Hebrew - Lesson 118b",
@@ -1817,9 +2078,24 @@
    "thumbnail": "https://images.letschurch.cloud/ueo9YYcMKVh7_mLf_2qYn3fj3uq-Epgkqo3Ex9gVazI/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC84YTc1NGVlZi1iZDViLTQ5MmMtYjI5Ni00MzFmNTkyZGVlMDAvdGh1bWJuYWlsLUJpbU40X2F6bFplUFk3dEhhUnNKZy5qcGVn"
   },
   {
+   "id": "torrent-119",
+   "season": 1,
+   "episode": 149,
+   "label": "Lesson 119",
+   "title": "Lesson 119",
+   "sourceTitle": "Lesson 119",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 119
+  },
+  {
    "id": "mJCKfSFLTWGKkDHmsb7et6",
    "season": 1,
-   "episode": 132,
+   "episode": 150,
    "label": "Lesson 120",
    "title": "Lesson 120 – Veqatal 1: Future Sequences",
    "sourceTitle": "Hebrew - Veqatal 1: Future Sequences - Biblical Hebrew - Lesson 120",
@@ -1832,7 +2108,7 @@
   {
    "id": "2ohUjwgGAiFXu7adTqkBTY",
    "season": 1,
-   "episode": 133,
+   "episode": 151,
    "label": "Lesson 121",
    "title": "Lesson 121 – Veqatal 2: In Context",
    "sourceTitle": "Hebrew - Veqatal 2: In Context - Biblical Hebrew - Lesson 121",
@@ -1845,7 +2121,7 @@
   {
    "id": "p7LpxawnrHzD7QedGCkhEg",
    "season": 1,
-   "episode": 134,
+   "episode": 152,
    "label": "Lesson 121b",
    "title": "Lesson 121b – This is What the King Will Do",
    "sourceTitle": "Biblical Hebrew - This is What the King Will Do - Lesson 121b",
@@ -1856,9 +2132,39 @@
    "thumbnail": "https://images.letschurch.cloud/FHPA2ZSmf5jCCqi4va_qqbZj_ataRW3GMeJmmn4HEtk/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC9iYjM0MDQ5Mi0zNmI1LTRkYzEtYjhjNi0wMzM1ZTliYmVlYTMvdGh1bWJuYWlsLWJsYnpGbTVtaDgzV0t6djJkdlBqWS53ZWJw"
   },
   {
+   "id": "torrent-122",
+   "season": 1,
+   "episode": 153,
+   "label": "Lesson 122",
+   "title": "Lesson 122",
+   "sourceTitle": "Lesson 122",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 122
+  },
+  {
+   "id": "torrent-123",
+   "season": 1,
+   "episode": 154,
+   "label": "Lesson 123",
+   "title": "Lesson 123",
+   "sourceTitle": "Lesson 123",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 123
+  },
+  {
    "id": "4S2hxKqfSsFSRfxHiABe8J",
    "season": 1,
-   "episode": 135,
+   "episode": 155,
    "label": "Lesson 124",
    "title": "Lesson 124 – Bring / Cause to Come - הֵבִיא - Causative Hiph'il Verbs 2",
    "sourceTitle": "Bring / Cause to Come - הֵבִיא - Causative Hiph'il Verbs 2 - Biblical Hebrew - Lesson 124",
@@ -1871,7 +2177,7 @@
   {
    "id": "b97h1DiJPvLKDXEdEfatZ9",
    "season": 1,
-   "episode": 136,
+   "episode": 156,
    "label": "Lesson 125",
    "title": "Lesson 125 – Jeremiah and the Rechabites",
    "sourceTitle": "Hebrew - Jeremiah and the Rechabites - Biblical Hebrew - Lesson 125",
@@ -1882,9 +2188,24 @@
    "thumbnail": "https://images.letschurch.cloud/eXxUUncsfzQApj3v2Vg5CuJtucMmRbGBAjQxtTqVmWc/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC81MjFkMzQ1Yi0xYWJhLTRlMDQtYmRmYi02NjBhZDk2Zjk2YzYvdGh1bWJuYWlsLTVBeTFGTFowdjdQUFlVbFdTcTBoTy5qcGVn"
   },
   {
+   "id": "torrent-126",
+   "season": 1,
+   "episode": 157,
+   "label": "Lesson 126",
+   "title": "Lesson 126",
+   "sourceTitle": "Lesson 126",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 126
+  },
+  {
    "id": "toCzmQgD1cPmy3Fv13cVrR",
    "season": 1,
-   "episode": 137,
+   "episode": 158,
    "label": "Lesson 127",
    "title": "Lesson 127 – Conditional 'if' clauses with אִם־",
    "sourceTitle": "Hebrew - Conditional 'if' clauses with אִם־ - Biblical Hebrew - Lesson 127",
@@ -1897,7 +2218,7 @@
   {
    "id": "2SjGWi4F8trzPjUCF9eS3w",
    "season": 1,
-   "episode": 138,
+   "episode": 159,
    "label": "Lesson 128",
    "title": "Lesson 128 – חֶסֶד - Loyal Covenant Love",
    "sourceTitle": "Hebrew - חֶסֶד - Loyal Covenant Love - Biblical Hebrew - Lesson 128",
@@ -1910,7 +2231,7 @@
   {
    "id": "u3EDmmQbw7JYDgVPDvA1ye",
    "season": 1,
-   "episode": 139,
+   "episode": 160,
    "label": "Lesson 129",
    "title": "Lesson 129 – Above, Below & Outside",
    "sourceTitle": "Hebrew - Above, Below & Outside - Biblical Hebrew - Lesson 129",
@@ -1923,7 +2244,7 @@
   {
    "id": "tKWdYjJKrtba5HdpnFaRNj",
    "season": 1,
-   "episode": 140,
+   "episode": 161,
    "label": "Lesson 130",
    "title": "Lesson 130 – Abraham's Servant & Rebekah Part 1",
    "sourceTitle": "Abraham's Servant & Rebekah Part 1 - Biblical Hebrew - Lesson 130",
@@ -1934,9 +2255,24 @@
    "thumbnail": "https://images.letschurch.cloud/p9xCX3xfTbFZt4cljCsEL1dfgz-yTzAW5T6Jc4LpsVc/rs::512/aHR0cHM6Ly9sZXRzY2h1cmNoLW1lZGlhLmItY2RuLm5ldC9lMGM5MjQ3Ni05YjliLTRlYjMtYjdkMS1jZTBlMjY5NWEwMWEvdGh1bWJuYWlsLVRJY1JPS3hLUWRhSldVdERhODhMei53ZWJw"
   },
   {
+   "id": "torrent-131",
+   "season": 1,
+   "episode": 162,
+   "label": "Lesson 131",
+   "title": "Lesson 131",
+   "sourceTitle": "Lesson 131",
+   "description": "",
+   "longDescription": "",
+   "publishedAt": null,
+   "duration": 0,
+   "thumbnail": null,
+   "source": "torrent",
+   "lesson": 131
+  },
+  {
    "id": "m44ETYG9TJ4rPYiiGgQJGn",
    "season": 1,
-   "episode": 141,
+   "episode": 163,
    "label": "Lesson 132",
    "title": "Lesson 132 – Put to Death - הֵמִית - Causative Hiph'il Verbs 3",
    "sourceTitle": "Put to Death - הֵמִית - Causative Hiph'il Verbs 3 - Biblical Hebrew - Lesson 132",
@@ -1949,7 +2285,7 @@
   {
    "id": "ncHSntPnsg1N8va8fLmnez",
    "season": 1,
-   "episode": 142,
+   "episode": 164,
    "label": "Lesson 133",
    "title": "Lesson 133 – Making Kings - Causative Hiph'il Verbs 4 - Strong Verbs",
    "sourceTitle": "Making Kings - Causative Hiph'il Verbs 4 - Strong Verbs - Biblical Hebrew - Lesson 133",
@@ -1962,7 +2298,7 @@
   {
    "id": "x1otLR5sMGXFScc3TbJmKu",
    "season": 1,
-   "episode": 143,
+   "episode": 165,
    "label": "Lesson 134",
    "title": "Lesson 134 – Elijah and the Widow's Son",
    "sourceTitle": "Elijah and the Widow's Son - Biblical Hebrew - Lesson 134",
@@ -1975,7 +2311,7 @@
   {
    "id": "ajasPFfLyJsHHxfLA9ACZ1",
    "season": 1,
-   "episode": 144,
+   "episode": 166,
    "label": "Lesson 135",
    "title": "Lesson 135 – Take Her Out! - Causative Hiph'il Verbs 5 - 1-Yod Verbs",
    "sourceTitle": "Take Her Out! - Causative Hiph'il Verbs 5 - 1-Yod Verbs - Biblical Hebrew - Lesson 135",
@@ -1988,7 +2324,7 @@
   {
    "id": "mBDqt91St8uXcXGAnbWX6v",
    "season": 1,
-   "episode": 145,
+   "episode": 167,
    "label": "Lesson 136",
    "title": "Lesson 136 – Make Known To Me - Causative Hiph'il Verbs 6",
    "sourceTitle": "Make Known To Me - Causative Hiph'il Verbs 6 - Biblical Hebrew - Lesson 136",
@@ -2001,7 +2337,7 @@
   {
    "id": "oGisHzfmmKbpQKLT2eP74x",
    "season": 1,
-   "episode": 146,
+   "episode": 168,
    "label": "Lesson 137",
    "title": "Lesson 137 – The Descendants of Noah",
    "sourceTitle": "The Descendants of Noah - Biblical Hebrew - Lesson 137",
@@ -2014,7 +2350,7 @@
   {
    "id": "qkWMTEhHvbi8kf67DC3vC9",
    "season": 1,
-   "episode": 147,
+   "episode": 169,
    "label": "Lesson 138",
    "title": "Lesson 138 – Exile & Ezekiel's Vision",
    "sourceTitle": "Hebrew - Exile & Ezekiel's Vision - Biblical Hebrew - Lesson 138",
@@ -2027,7 +2363,7 @@
   {
    "id": "6kCqboyTRioyMf4AfZnHGq",
    "season": 1,
-   "episode": 148,
+   "episode": 170,
    "label": "Lesson 138b",
    "title": "Lesson 138b – Ezekiel Saw Visions of God",
    "sourceTitle": "Ezekiel Saw Visions of God - Biblical Hebrew - Lesson 138b",
@@ -2040,7 +2376,7 @@
   {
    "id": "dELznvq2TT38gvCYf2NgL4",
    "season": 1,
-   "episode": 149,
+   "episode": 171,
    "label": "Lesson 139",
    "title": "Lesson 139 – Put it back! - הֵשִׁיב - Causative Hiph'il Verbs 7",
    "sourceTitle": "Put it back! - הֵשִׁיב - Causative Hiph'il Verbs 7 - Biblical Hebrew - Lesson 139",
@@ -2053,7 +2389,7 @@
   {
    "id": "jqex25opdsRWc8rE6aawQt",
    "season": 1,
-   "episode": 150,
+   "episode": 172,
    "label": "Lesson 140",
    "title": "Lesson 140 – Returning Evil for Evil",
    "sourceTitle": "Returning Evil for Evil - Biblical Hebrew - Lesson 140",
@@ -2066,7 +2402,7 @@
   {
    "id": "hxjgTwZZKZ92DSLJ5gAS3m",
    "season": 1,
-   "episode": 151,
+   "episode": 173,
    "label": "Lesson 141",
    "title": "Lesson 141 – Rise Early the Next Day - הִשְׁכִּים מִמָּחֳרָת",
    "sourceTitle": "Rise Early the Next Day - הִשְׁכִּים מִמָּחֳרָת - Biblical Hebrew - Lesson 141",
@@ -2079,7 +2415,7 @@
   {
    "id": "3jpJoMn87t1Z3P78Hkaf1X",
    "season": 1,
-   "episode": 152,
+   "episode": 174,
    "label": "Lesson 142",
    "title": "Lesson 142 – Raise Up/Cause to Stand ⬆ - Causative Hiph'il Verbs 8",
    "sourceTitle": "Raise Up/Cause to Stand ⬆ - Causative Hiph'il Verbs 8 - Biblical Hebrew - Lesson 142",
@@ -2092,7 +2428,7 @@
   {
    "id": "93PauDFjZh72HeqxfrqPnh",
    "season": 1,
-   "episode": 153,
+   "episode": 175,
    "label": "Lesson 142b",
    "title": "Lesson 142b – Summary of Hiph'il Verb Forms",
    "sourceTitle": "Summary of Hiph'il Verb Forms - Biblical Hebrew - Lesson 142b",
@@ -2105,7 +2441,7 @@
   {
    "id": "i1uF1r73FjDfKxB7XetMyj",
    "season": 1,
-   "episode": 154,
+   "episode": 176,
    "label": "Lesson 143",
    "title": "Lesson 143 – Seek & Find",
    "sourceTitle": "Seek & Find - Biblical Hebrew - Lesson 143",
@@ -2118,7 +2454,7 @@
   {
    "id": "d6qy3FC2WFKn4NqEXmJeiU",
    "season": 1,
-   "episode": 155,
+   "episode": 177,
    "label": "Lesson 144",
    "title": "Lesson 144 – Flee & Find Favor",
    "sourceTitle": "Flee & Find Favor - Biblical Hebrew - Lesson 144",
@@ -2131,7 +2467,7 @@
   {
    "id": "2fVwX2keBq3yabHi4DFJjs",
    "season": 1,
-   "episode": 156,
+   "episode": 178,
    "label": "Lesson 145",
    "title": "Lesson 145 – Infinitives 1: With Lamed",
    "sourceTitle": "Infinitives 1: With Lamed - Biblical Hebrew - Lesson 145",
@@ -2144,7 +2480,7 @@
   {
    "id": "ntBKTGG4o2PHaR74pqyoK5",
    "season": 1,
-   "episode": 157,
+   "episode": 179,
    "label": "Lesson 146",
    "title": "Lesson 146 – Ships on the Sea - Infinitives 2: In Context",
    "sourceTitle": "Ships on the Sea - Infinitives 2: In Context - Biblical Hebrew - Lesson 146",
@@ -2157,7 +2493,7 @@
   {
    "id": "jWp4TqQZJtHWA1xvKv5Aim",
    "season": 1,
-   "episode": 158,
+   "episode": 180,
    "label": "Lesson 146b",
    "title": "Lesson 146b – Infinitive Construct with Lamed Patterns",
    "sourceTitle": "Infinitive Construct with Lamed Patterns - Biblical Hebrew - Lesson 146b",
@@ -2170,7 +2506,7 @@
   {
    "id": "pmsu4EheV5JH66Xda8tCRk",
    "season": 1,
-   "episode": 159,
+   "episode": 181,
    "label": "Lesson 147",
    "title": "Lesson 147 – Judges, Judgment & Justice",
    "sourceTitle": "Judges, Judgment & Justice - Biblical Hebrew - Lesson 147",
@@ -2183,7 +2519,7 @@
   {
    "id": "cUxSmmkdW4w7USQepL7Nuf",
    "season": 1,
-   "episode": 160,
+   "episode": 182,
    "label": "Lesson 148",
    "title": "Lesson 148 – Do Again & Time - Infinitives 3",
    "sourceTitle": "Do Again & Time - Infinitives 3 - Biblical Hebrew - Lesson 148",
@@ -2196,7 +2532,7 @@
   {
    "id": "hs8GrdYLpMFtvLJUM5doFN",
    "season": 1,
-   "episode": 161,
+   "episode": 183,
    "label": "Lesson 149",
    "title": "Lesson 149 – Can & Cannot - Infinitives 4",
    "sourceTitle": "Can & Cannot - Infinitives 4 - Biblical Hebrew - Lesson 149",
@@ -2209,7 +2545,7 @@
   {
    "id": "e8mRNsGGHWGXnKVXZzzPKo",
    "season": 1,
-   "episode": 162,
+   "episode": 184,
    "label": "Lesson 149b",
    "title": "Lesson 149b – You Cannot See My Face",
    "sourceTitle": "You Cannot See My Face - Biblical Hebrew - Lesson 149b",
@@ -2222,7 +2558,7 @@
   {
    "id": "kiCKzgaSsrWvySu7XjGZJX",
    "season": 1,
-   "episode": 163,
+   "episode": 185,
    "label": "Lesson 150",
    "title": "Lesson 150 – Jethro's Advice",
    "sourceTitle": "Jethro's Advice - Biblical Hebrew - Lesson 150",
@@ -2235,7 +2571,7 @@
   {
    "id": "ks1bU4CFX2yNvYiqLoLTPp",
    "season": 1,
-   "episode": 164,
+   "episode": 186,
    "label": "Lesson 151",
    "title": "Lesson 151 – My Sitting and My Rising - Infinitives 5",
    "sourceTitle": "My Sitting and My Rising - Infinitives 5 - Biblical Hebrew - Lesson 151",
@@ -2248,7 +2584,7 @@
   {
    "id": "1F6q4fzRtmpe4WHERWTcVk",
    "season": 1,
-   "episode": 165,
+   "episode": 187,
    "label": "Lesson 152",
    "title": "Lesson 152 – On the Day You Eat of the Tree",
    "sourceTitle": "On the Day You Eat of the Tree - Biblical Hebrew - Lesson 152",
@@ -2261,7 +2597,7 @@
   {
    "id": "nNjn4MLXxQDyT54RDJCrmo",
    "season": 1,
-   "episode": 166,
+   "episode": 188,
    "label": "Lesson 153",
    "title": "Lesson 153 – When I Went to Egypt - Infinitives 6 - \"When\" Clauses with ב",
    "sourceTitle": "When I Went to Egypt - Infinitives 6 - \"When\" Clauses with ב - Biblical Hebrew - Lesson 153",
@@ -2274,7 +2610,7 @@
   {
    "id": "aq6hLnqEFu3cyZSEEpm8D4",
    "season": 1,
-   "episode": 167,
+   "episode": 189,
    "label": "Lesson 154",
    "title": "Lesson 154 – Sing a New Song!",
    "sourceTitle": "Sing a New Song! - Biblical Hebrew - Lesson 154",
@@ -2287,7 +2623,7 @@
   {
    "id": "f3D4n3PDS2KRvYf3WVkrU7",
    "season": 1,
-   "episode": 168,
+   "episode": 190,
    "label": "Lesson 154b",
    "title": "Lesson 154b – A New Heart",
    "sourceTitle": "A New Heart - Biblical Hebrew - Lesson 154b",
@@ -2300,7 +2636,7 @@
   {
    "id": "eJLQ8s1WuqZpG3D6LLGuMd",
    "season": 1,
-   "episode": 169,
+   "episode": 191,
    "label": "Lesson 155",
    "title": "Lesson 155 – Writing Blessings & Curses",
    "sourceTitle": "Writing Blessings & Curses - Biblical Hebrew - Lesson 155",
@@ -2313,7 +2649,7 @@
   {
    "id": "tqopM4mjmF5tTpXPgoYdjW",
    "season": 1,
-   "episode": 170,
+   "episode": 192,
    "label": "Lesson 155b",
    "title": "Lesson 155b – Your Curse Be Upon Me, My Son",
    "sourceTitle": "Your Curse Be Upon Me, My Son - Biblical Hebrew - Lesson 155b",
@@ -2326,7 +2662,7 @@
   {
    "id": "2JFpeJpsSpYrFqMaNxsDPL",
    "season": 1,
-   "episode": 171,
+   "episode": 193,
    "label": "Lesson 156",
    "title": "Lesson 156 – The Man Who Cursed David",
    "sourceTitle": "The Man Who Cursed David - Biblical Hebrew - Lesson 156",
@@ -2339,7 +2675,7 @@
   {
    "id": "rjnh7qLkbn96GFFTn9QwFu",
    "season": 1,
-   "episode": 172,
+   "episode": 194,
    "label": "Lesson 157",
    "title": "Lesson 157 – As Soon As He Saw Him - Infinitives 7 - 'As Soon As' With כ",
    "sourceTitle": "As Soon As He Saw Him - Infinitives 7 - 'As Soon As' With כ - Biblical Hebrew - Lesson 157",
@@ -2352,7 +2688,7 @@
   {
    "id": "2PgS7RVsqTEWeq7vfz7YXs",
    "season": 1,
-   "episode": 173,
+   "episode": 195,
    "label": "Lesson 158",
    "title": "Lesson 158 – Nefesh נֶפֶשׁ - Life/Soul/Person",
    "sourceTitle": "Nefesh נֶפֶשׁ - Life/Soul/Person - Biblical Hebrew - Lesson 158",
@@ -2365,7 +2701,7 @@
   {
    "id": "hUvUrZAe5CjYZ5BSCZ9o7V",
    "season": 1,
-   "episode": 174,
+   "episode": 196,
    "label": "Lesson 158b",
    "title": "Lesson 158b – He Shall Surely Be Put To Death - A Hoph'al Verb",
    "sourceTitle": "He Shall Surely Be Put To Death - A Hoph'al Verb - Biblical Hebrew - Lesson 158b",
@@ -2378,7 +2714,7 @@
   {
    "id": "22m4fbwnhPjxrJXuyCbk3C",
    "season": 1,
-   "episode": 175,
+   "episode": 197,
    "label": "Lesson 159",
    "title": "Lesson 159 – To Fast, Wash, & Keep",
    "sourceTitle": "To Fast, Wash, & Keep - Biblical Hebrew - Lesson 159",
@@ -2391,7 +2727,7 @@
   {
    "id": "9ype483bH7LEjtgwihTbMy",
    "season": 1,
-   "episode": 176,
+   "episode": 198,
    "label": "Lesson 160",
    "title": "Lesson 160 – I Have Sinned! - חָטָאתִי",
    "sourceTitle": "I Have Sinned! - חָטָאתִי - Biblical Hebrew - Lesson 160",
@@ -2404,7 +2740,7 @@
   {
    "id": "jGpYN1ynSMcn8EBUKUN2ok",
    "season": 1,
-   "episode": 177,
+   "episode": 199,
    "label": "Lesson 161",
    "title": "Lesson 161 – David's Sin - חַטַּאת דָּוִד",
    "sourceTitle": "David's Sin - חַטַּאת דָּוִד - Biblical Hebrew - Lesson 161",
@@ -2417,7 +2753,7 @@
   {
    "id": "wsWGtzLJGsPkHiNgC83BRE",
    "season": 1,
-   "episode": 178,
+   "episode": 200,
    "label": "Lesson 162",
    "title": "Lesson 162 – Threw It In the Fire and Out Came This Calf!",
    "sourceTitle": "Threw It In the Fire and Out Came This Calf! - Biblical Hebrew - Lesson 162",
@@ -2430,7 +2766,7 @@
   {
    "id": "woDjdWW7eq33RMW6683EJq",
    "season": 1,
-   "episode": 179,
+   "episode": 201,
    "label": "Lesson 162b",
    "title": "Lesson 162b – Throwing Joseph in the Cistern",
    "sourceTitle": "Throwing Joseph in the Cistern - Biblical Hebrew - Lesson 162b",

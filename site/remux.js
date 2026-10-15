@@ -333,30 +333,43 @@ function runLength(values) {
   return out;
 }
 
+// Pack rows of 32-bit values into one buffer (tables can have 100k+ rows,
+// too many to pass around as separate arguments).
+function u32Table(rows, width) {
+  const out = new Uint8Array(4 + rows.length * width * 4);
+  const dv = new DataView(out.buffer);
+  dv.setUint32(0, rows.length);
+  let o = 4;
+  for (const row of rows) {
+    for (let k = 0; k < width; k++) { dv.setUint32(o, (width === 1 ? row : row[k]) >>> 0); o += 4; }
+  }
+  return out;
+}
+
 function buildStbl(track, stsd, outOffsets) {
   const parts = [stsd.data];
 
   const stts = runLength(track.durations);
-  parts.push(fullBox('stts', 0, 0, u32(stts.length), ...stts.flatMap(([n, d]) => [u32(n), u32(d)])));
+  parts.push(fullBox('stts', 0, 0, u32Table(stts, 2)));
 
   if (track.ctos.some((c) => c !== 0)) {
     const ctts = runLength(track.ctos);
     const negative = track.ctos.some((c) => c < 0);
-    parts.push(fullBox('ctts', negative ? 1 : 0, 0, u32(ctts.length), ...ctts.flatMap(([n, c]) => [u32(n), u32(c)])));
+    parts.push(fullBox('ctts', negative ? 1 : 0, 0, u32Table(ctts, 2)));
   }
 
   if (track.nonSync.length) {
     const nonSync = new Set(track.nonSync);
     const sync = [];
-    for (let i = 1; i <= track.sampleCount; i++) if (!nonSync.has(i)) sync.push(u32(i));
-    parts.push(fullBox('stss', 0, 0, u32(sync.length), ...sync));
+    for (let i = 1; i <= track.sampleCount; i++) if (!nonSync.has(i)) sync.push(i);
+    parts.push(fullBox('stss', 0, 0, u32Table(sync, 1)));
   }
 
   const stsc = [];
   track.chunks.forEach((c, i) => {
     if (!stsc.length || stsc[stsc.length - 1][1] !== c.count) stsc.push([i + 1, c.count]);
   });
-  parts.push(fullBox('stsc', 0, 0, u32(stsc.length), ...stsc.flatMap(([first, n]) => [u32(first), u32(n), u32(1)])));
+  parts.push(fullBox('stsc', 0, 0, u32Table(stsc.map(([first, n]) => [first, n, 1]), 3)));
 
   const constant = track.sizes.every((s) => s === track.sizes[0]) ? track.sizes[0] || 0 : 0;
   if (constant) {

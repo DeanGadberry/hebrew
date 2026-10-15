@@ -31,6 +31,8 @@ USER_AGENT = "aleph-with-beth-offline/1.0 (+https://github.com/DeanGadberry/hebr
 # Internet Archive items used to fill lessons Lets.Church doesn't have.
 # (The relay only serves items listed in relay/worker.js ARCHIVE_ITEMS.)
 ARCHIVE_ITEMS = ["aleph-with-beth-lessons-1-66-1080p"]
+# The creators' torrents hold lessons 1-156 (https://freehebrew.online/offline/).
+TORRENT_LAST_LESSON = 156
 ARCHIVE_LESSON_RE = re.compile(r"^(?:\d+\s*-\s*)?(.*?)\s*-\s*Lesson (\d+)([a-zA-Z]?)\.mp4$")
 
 SEASONS = {
@@ -112,6 +114,10 @@ def fetch_archive_lessons():
     return found
 
 
+def number_of(placeholder_id):
+    return int(placeholder_id.rsplit("-", 1)[1])
+
+
 def clean_title(title):
     parts = [p.strip() for p in re.split(r"\s+[-–־]\s+", title)]
     kept = [p for p in parts if p and not NOISE_RE.match(p)]
@@ -173,6 +179,24 @@ def build(items, archive_lessons=None):
         }
         by_season[1][key] = (item, key, label)
 
+    # Whatever is still missing comes from the creators' torrent (lessons 1-156),
+    # fetched by the "Fetch missing lessons" workflow. Placeholders keep the
+    # episode numbers stable and let the page offer them.
+    have = set(by_season[1])
+    top = max((key[0] for key in have), default=0)
+    for number in range(1, min(top, TORRENT_LAST_LESSON) + 1):
+        if (number, "") in have:
+            continue
+        key = (number, "")
+        by_season[1][key] = ({
+            "id": f"torrent-{number}",
+            "title": f"Lesson {number}",
+            "description": "",
+            "lengthSeconds": 0,
+            "thumbnailUrl": None,
+            "_torrent": True,
+        }, key, f"Lesson {number}")
+
     episodes = []
     for season, entries in by_season.items():
         ordered = sorted(entries.values(), key=lambda e: e[1])
@@ -191,6 +215,8 @@ def build(items, archive_lessons=None):
                 "duration": round(item["lengthSeconds"]),
                 "thumbnail": item.get("thumbnailUrl"),
             })
+            if item.get("_torrent"):
+                episodes[-1].update({"source": "torrent", "lesson": number_of(item["id"])})
             extra = item.get("_archive")
             if extra:
                 episodes[-1].update({
@@ -200,8 +226,7 @@ def build(items, archive_lessons=None):
                     "height": extra["height"],
                 })
 
-    lesson_numbers = {int(re.search(r"\d+", e["label"]).group()) for e in episodes if e["season"] == 1}
-    missing = [n for n in range(1, max(lesson_numbers, default=0) + 1) if n not in lesson_numbers]
+    missing = sorted(e["lesson"] for e in episodes if e.get("source") == "torrent")
 
     return {
         "show": SHOW,
@@ -212,8 +237,8 @@ def build(items, archive_lessons=None):
             {"number": n, "name": name, "count": sum(1 for e in episodes if e["season"] == n)}
             for n, name in SEASONS.items()
         ],
-        # Lesson numbers neither Lets.Church nor the Internet Archive items have
-        # (the creators' torrents do).
+        # Lesson numbers neither Lets.Church nor the Internet Archive items have;
+        # they're listed as "torrent" episodes (see .github/workflows/fetch-missing.yml).
         "missingLessons": missing,
         "episodes": episodes,
     }

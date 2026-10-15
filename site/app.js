@@ -1,19 +1,9 @@
-import { RELAY_URL } from './config.js';
-import { MEDIA_KIND } from './remux.js';
+import { RELAY_URL, REPO_URL } from './config.js';
+import { QUALITY, qualityFor as baseQualityFor, episodeFilename, episodeMetadata } from './episodes.js';
 
-// Rough sizes of what Lets.Church serves, in MB per minute (for estimates only).
-const QUALITY = {
-  VIDEO_1080P: { label: '1080p', mbPerMin: 38, ext: 'm4v', hd: 2 },
-  VIDEO_4K: { label: '4K', mbPerMin: 140, ext: 'm4v', hd: 3 },
-  AUDIO: { label: 'audio', mbPerMin: 1.3, ext: 'm4a', hd: null },
-  // Lessons Lets.Church lacks come from the Internet Archive as a single 720p file.
-  ARCHIVE: { label: '720p', mbPerMin: 7, ext: 'm4v', hd: 1 },
-};
-
-// What actually gets downloaded for an episode at the chosen quality.
-function qualityFor(ep, quality = state.quality) {
-  return ep.source === 'archive' ? 'ARCHIVE' : quality;
-}
+const qualityFor = (ep, quality = state.quality) => baseQualityFor(ep, quality);
+const filenameFor = (ep, quality) => episodeFilename(state.catalog, ep, quality);
+const metadataFor = (ep, quality) => episodeMetadata(state.catalog, ep, quality);
 
 function sourceUrls(ep, quality) {
   const relay = relayUrl();
@@ -59,6 +49,7 @@ function relayUrl() {
 // Formatting
 
 function fmtDuration(sec) {
+  if (!sec) return '—';
   const m = Math.round(sec / 60);
   return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`;
 }
@@ -71,57 +62,6 @@ function fmtSize(mb) {
 function estimateMb(ep, quality = state.quality) {
   if (ep.size) return ep.size / 1048576;
   return (ep.duration / 60) * QUALITY[qualityFor(ep, quality)].mbPerMin;
-}
-
-function pad(n, width) { return String(n).padStart(width, '0'); }
-
-function filenameFor(ep, requested) {
-  const quality = qualityFor(ep, requested);
-  const season = state.catalog.seasons.find((s) => s.number === ep.season);
-  const width = Math.max(2, String(season.count).length);
-  // ASCII only: some browsers drop the whole name otherwise. The tags keep the full title.
-  const safe = ep.title
-    .replace(/[\u2013\u2014\u05be]/g, '-')
-    .normalize('NFKD')
-    .replace(/[^\x20-\x7e]/g, '')
-    .replace(/[\\/:*?"<>|]/g, '')
-    .replace(/(\s*-\s*)+$/, '')
-    .replace(/(\s+-)+\s+/g, ' - ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 120);
-  return `${state.catalog.show} - S${pad(ep.season, 2)}E${pad(ep.episode, width)} - ${safe}.${QUALITY[quality].ext}`;
-}
-
-function metadataFor(ep, requested) {
-  const quality = qualityFor(ep, requested);
-  const season = state.catalog.seasons.find((s) => s.number === ep.season);
-  const show = state.catalog.show;
-  const common = {
-    title: ep.title,
-    artist: show,
-    albumArtist: show,
-    genre: 'Education',
-    date: ep.publishedAt || undefined,
-    description: ep.description || undefined,
-    longDescription: ep.longDescription || ep.description || undefined,
-    copyright: 'Public domain — freely given (Matt 10:8)',
-    encoder: 'Aleph with Beth Offline',
-  };
-  if (quality === 'AUDIO') {
-    return { ...common, mediaKind: MEDIA_KIND.music, album: `${show} – ${season.name}`, track: ep.episode, trackTotal: season.count, comment: ep.description || undefined };
-  }
-  return {
-    ...common,
-    mediaKind: MEDIA_KIND.tvShow,
-    album: `${show}, ${season.name}`,
-    show,
-    showSort: show,
-    season: ep.season,
-    episode: ep.episode,
-    episodeId: ep.label || `S${pad(ep.season, 2)}E${pad(ep.episode, 3)}`,
-    hdVideo: QUALITY[quality].hd,
-  };
 }
 
 // ---------------------------------------------------------------------------
@@ -185,6 +125,9 @@ function renderEpisodes() {
     const meta = document.createElement('div');
     meta.className = 'meta';
     meta.innerHTML = `${fmtDuration(ep.duration)}<br>~${fmtSize(estimateMb(ep))}`;
+    if (ep.source === 'torrent') {
+      meta.innerHTML = '<span class="badge" title="Only in the creators’ torrent; fetched by a GitHub workflow">Torrent · via GitHub</span>';
+    }
     if (ep.source === 'archive') {
       meta.insertAdjacentHTML('beforeend', '<br><span class="badge" title="Not on Lets.Church; downloaded from the Internet Archive as 720p video">Internet Archive · 720p</span>');
     }
@@ -393,7 +336,16 @@ function startDownloads() {
     showNotice('Add the relay address in Settings first (see the README for the one-time setup).', true);
     return;
   }
-  const eps = state.catalog.episodes.filter((e) => state.selected.has(e.id));
+  const picked = state.catalog.episodes.filter((e) => state.selected.has(e.id));
+  const fromTorrent = picked.filter((e) => e.source === 'torrent');
+  const eps = picked.filter((e) => e.source !== 'torrent');
+  if (fromTorrent.length) {
+    const lessons = fromTorrent.map((e) => e.lesson).join(',');
+    showNotice(`Lesson${fromTorrent.length > 1 ? 's' : ''} ${lessons} only exist in the creators’ torrent, which a browser can’t download.
+      Open <a href="${REPO_URL}/actions/workflows/fetch-missing.yml" target="_blank" rel="noopener">Fetch missing lessons</a>,
+      click <strong>Run workflow</strong> (it fetches every missing lesson by default, or type <code>${lessons}</code>),
+      then download the zip from the finished run. The files are tagged just like these.`);
+  }
   for (const ep of eps) {
     if (state.queue.some((j) => j.ep.id === ep.id && j.quality === state.quality && (j.state === 'waiting' || j.state === 'running'))) continue;
     state.queue.push({
@@ -410,7 +362,8 @@ function startDownloads() {
   state.selected.clear();
   render();
   renderQueue();
-  $('queue-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (eps.length) $('queue-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  else $('notice').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   pump();
 }
 
@@ -448,7 +401,8 @@ async function init() {
   if (!supported()) {
     showNotice('This browser can’t save large files from a web page. Please use a current Chrome, Edge, Safari or Firefox.', true);
   } else if (state.catalog.missingLessons?.length) {
-    showNotice(`Lessons ${state.catalog.missingLessons.join(', ')} aren’t on Lets.Church or the Internet Archive yet. The creators’ <a href="https://freehebrew.online/offline/" target="_blank" rel="noopener">offline page</a> has torrents of lessons 1–156 that include them.`);
+    showNotice(`Lessons ${state.catalog.missingLessons.join(', ')} aren’t on Lets.Church or the Internet Archive, so they come from the creators’ <a href="https://freehebrew.online/offline/" target="_blank" rel="noopener">torrent</a>
+      through a one-click <a href="${REPO_URL}/actions/workflows/fetch-missing.yml" target="_blank" rel="noopener">GitHub workflow</a>. They’re marked “Torrent” in the list.`);
   }
 
   $('search').addEventListener('input', (e) => { state.search = e.target.value; renderSeasons(); renderEpisodes(); });

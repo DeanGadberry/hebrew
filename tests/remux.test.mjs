@@ -146,3 +146,16 @@ test('real Lets.Church download', { skip: !real || !existsSync(real) ? 'set REMU
   checkOutput(real, dst);
   checkTags(dst);
 });
+
+test('scripts/tag.mjs tags a torrent lesson from the catalog', async () => {
+  const src = join(dir, 'frag.mp4');
+  const outDir = join(dir, 'tagged');
+  const catalog = JSON.parse(execFileSync('cat', [new URL('../site/catalog.json', import.meta.url).pathname], { encoding: 'utf8' }));
+  const ep = catalog.episodes.find((e) => e.source === 'torrent');
+  const out = execFileSync('node', [new URL('../scripts/tag.mjs', import.meta.url).pathname, '--lesson', String(ep.lesson), '--title', 'Where Is Joseph', src, outDir], { encoding: 'utf8' }).trim();
+  assert.match(out, new RegExp(`S01E\\d+ - Lesson ${ep.lesson} - Where Is Joseph\\.m4v$`));
+  const tags = probe(out, ['-show_entries', 'format_tags']).format.tags;
+  assert.equal(tags.show, 'Aleph with Beth');
+  assert.equal(tags.episode_sort, String(ep.episode));
+  assert.equal(tags.title, `Lesson ${ep.lesson} – Where Is Joseph`);
+});
