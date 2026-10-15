@@ -20,6 +20,19 @@
     </div>
   </header>
 
+  <div class="bar" id="bar">
+    <div class="wrap bar-inner">
+      <div class="summary" aria-live="polite">
+        <strong id="sel-count">0</strong> <span id="sel-noun">episodes selected</span>
+        <span class="muted" id="sel-size">Pick episodes below</span>
+      </div>
+      <div class="bar-actions">
+        <button class="btn ghost" id="pick-folder" hidden>Save to folder…</button>
+        <button class="btn primary" id="download" disabled>Download</button>
+      </div>
+    </div>
+  </div>
+
   <main class="wrap">
     <div id="notice" class="notice" hidden></div>
 
@@ -41,19 +54,24 @@
         </label>
       </div>
 
-      <form class="row range" id="range-form">
-        <span class="range-label">Episodes</span>
-        <label class="sr-only" for="range-from">From episode</label>
-        <input type="number" id="range-from" min="1" inputmode="numeric" placeholder="1">
-        <span aria-hidden="true">to</span>
-        <label class="sr-only" for="range-to">To episode</label>
-        <input type="number" id="range-to" min="1" inputmode="numeric" placeholder="20">
-        <button type="submit" class="btn">Select range</button>
-        <button type="button" class="btn ghost" id="select-all">Select all shown</button>
-        <button type="button" class="btn ghost" id="select-new">Select not yet saved</button>
+      <div class="trim" id="trim">
+        <div class="trim-head">
+          <span class="range-label">Range</span>
+          <span class="trim-readout" id="trim-readout">Drag to pick a range</span>
+        </div>
+        <div class="trim-track" id="trim-track">
+          <div class="trim-fill" id="trim-fill"></div>
+          <input type="range" id="trim-lo" min="1" max="2" value="1" step="1" aria-label="First episode in range">
+          <input type="range" id="trim-hi" min="1" max="2" value="2" step="1" aria-label="Last episode in range">
+        </div>
+      </div>
+
+      <div class="row quick">
+        <button type="button" class="btn ghost" id="select-all">Select all</button>
+        <button type="button" class="btn ghost" id="select-new">Not yet saved</button>
         <button type="button" class="btn ghost" id="clear">Clear</button>
-      </form>
-      <p class="hint">Tip: tick one box, then hold <kbd>Shift</kbd> and tick another to select everything between them.</p>
+        <span class="hint">Or tick episodes; <kbd>Shift</kbd>-tick selects everything between.</span>
+      </div>
     </section>
 
     <section aria-label="Episodes">
@@ -91,15 +109,6 @@
     </details>
   </main>
 
-  <div class="bar" id="bar" hidden>
-    <div class="wrap bar-inner">
-      <div><strong id="sel-count">0</strong> selected · <span id="sel-size"></span></div>
-      <div class="bar-actions">
-        <button class="btn ghost" id="pick-folder" hidden>Save to folder…</button>
-        <button class="btn primary" id="download">Download</button>
-      </div>
-    </div>
-  </div>
 
   <footer class="wrap foot">
     <p>Aleph with Beth is made by Andrew &amp; Beth Case. <a href="https://freehebrew.online" target="_blank" rel="noopener">freehebrew.online</a> · <a href="https://freehebrew.online/give" target="_blank" rel="noopener">Support their work</a></p>

@@ -110,55 +110,152 @@ function renderEpisodes() {
     const li = document.createElement('li');
     li.className = 'ep' + (state.selected.has(ep.id) ? ' selected' : '');
     li.dataset.id = ep.id;
+    if (ep.description) li.title = ep.description;
 
     const box = document.createElement('input');
     box.type = 'checkbox';
     box.checked = state.selected.has(ep.id);
     box.setAttribute('aria-label', `Select ${ep.title}`);
 
-    const img = document.createElement('img');
-    img.loading = 'lazy';
-    img.alt = '';
-    if (ep.thumbnail) img.src = ep.thumbnail;
+    const num = document.createElement('span');
+    num.className = 'num';
+    const season = state.catalog.seasons.find((x) => x.number === ep.season);
+    num.textContent = state.search ? `S${ep.season}·${ep.episode}` : String(ep.episode);
+    if (state.search) num.title = season.name;
 
-    const text = document.createElement('div');
-    const season = state.catalog.seasons.find((s) => s.number === ep.season);
-    text.innerHTML = '<div class="num"></div><div class="title"></div><div class="desc"></div>';
-    text.children[0].textContent = `${state.search ? `${season.name} · ` : ''}Episode ${ep.episode}`;
-    text.children[1].textContent = ep.title;
-    text.children[2].textContent = ep.description;
+    const title = document.createElement('span');
+    title.className = 'title';
+    title.textContent = ep.title;
 
-    const meta = document.createElement('div');
+    const tags = document.createElement('span');
+    tags.className = 'tags';
+    if (ep.source === 'torrent') tags.insertAdjacentHTML('beforeend', '<span class="badge" title="Only in the creators’ torrent; fetched by the “Fetch missing lessons” GitHub workflow">Torrent</span>');
+    if (ep.source === 'archive') tags.insertAdjacentHTML('beforeend', '<span class="badge" title="Not on Lets.Church; downloaded from the Internet Archive as 720p video">Archive 720p</span>');
+    if (isSaved(ep.id)) tags.insertAdjacentHTML('beforeend', '<span class="saved" title="Already saved at this quality">✓</span>');
+
+    const meta = document.createElement('span');
     meta.className = 'meta';
-    meta.innerHTML = `${fmtDuration(ep.duration)}<br>~${fmtSize(estimateMb(ep))}`;
-    if (ep.source === 'torrent') {
-      meta.innerHTML = '<span class="badge" title="Only in the creators’ torrent; fetched by a GitHub workflow">Torrent · via GitHub</span>';
-    }
-    if (ep.source === 'archive') {
-      meta.insertAdjacentHTML('beforeend', '<br><span class="badge" title="Not on Lets.Church; downloaded from the Internet Archive as 720p video">Internet Archive · 720p</span>');
-    }
-    if (isSaved(ep.id)) meta.insertAdjacentHTML('beforeend', '<br><span class="saved">✓ saved</span>');
+    meta.textContent = ep.source === 'torrent' ? fmtSize(estimateMb(ep)) : `${fmtDuration(ep.duration)} · ${fmtSize(estimateMb(ep))}`;
 
-    li.append(box, img, text, meta);
-    li.addEventListener('click', (e) => toggle(ep.id, e.shiftKey, e.target === box ? box.checked : !state.selected.has(ep.id)));
+    li.append(box, num, title, tags, meta);
+    li.addEventListener('click', (e) => {
+      state.trimActive = false;
+      toggle(ep.id, e.shiftKey, e.target === box ? box.checked : !state.selected.has(ep.id));
+    });
     frag.append(li);
   }
   $('episodes').replaceChildren(frag);
   $('empty').hidden = list.length > 0;
-
-  const season = state.catalog.seasons.find((s) => s.number === state.season);
-  $('range-to').placeholder = String(season?.count || 20);
+  renderTrim();
 }
 
 function renderBar() {
   const eps = state.catalog.episodes.filter((e) => state.selected.has(e.id));
-  $('bar').hidden = eps.length === 0;
   $('sel-count').textContent = String(eps.length);
+  $('sel-noun').textContent = eps.length === 1 ? 'episode selected' : 'episodes selected';
   const mb = eps.reduce((sum, e) => sum + estimateMb(e), 0);
   const min = eps.reduce((sum, e) => sum + e.duration, 0);
-  $('sel-size').textContent = `${fmtDuration(min)} · about ${fmtSize(mb)} (${QUALITY[state.quality].label})`;
+  // Always one line of text, so the pinned bar never changes height mid-drag.
+  $('sel-size').textContent = eps.length ? `${fmtDuration(min)} · about ${fmtSize(mb)} · ${QUALITY[state.quality].label}` : 'Pick episodes below';
+  $('download').disabled = eps.length === 0;
   $('pick-folder').hidden = !canPickFolder;
   $('pick-folder').textContent = state.folder ? `Folder: ${state.folder.name}` : 'Save to folder…';
+}
+
+// ---------------------------------------------------------------------------
+// Range slider ("trim"): two handles over the episodes shown; dragging
+// selects everything between them.
+
+function trimList() { return state.search ? [] : visibleEpisodes(); }
+
+function renderTrim() {
+  const list = trimList();
+  const lo = $('trim-lo');
+  const hi = $('trim-hi');
+  $('trim').classList.toggle('disabled', list.length < 2);
+  lo.disabled = hi.disabled = list.length < 2;
+  if (list.length < 2) {
+    $('trim-readout').textContent = state.search ? 'Clear the search to use the range' : '';
+    return;
+  }
+  const max = list.length;
+  if (state.trimSeason !== state.season || Number(lo.max) !== max) {
+    state.trimSeason = state.season;
+    state.trimActive = false;
+    lo.max = hi.max = String(max);
+    lo.value = '1';
+    hi.value = String(max);
+  }
+  const a = Number(lo.value);
+  const b = Number(hi.value);
+  const pct = (v) => ((v - 1) / (max - 1)) * 100;
+  $('trim-fill').style.left = `${pct(a)}%`;
+  $('trim-fill').style.right = `${100 - pct(b)}%`;
+  $('trim').classList.toggle('active', !!state.trimActive);
+  const name = (ep) => ep.label || `Episode ${ep.episode}`;
+  const count = b - a + 1;
+  $('trim-readout').textContent = state.trimActive
+    ? `${name(list[a - 1])} → ${name(list[b - 1])} · ${count} episode${count === 1 ? '' : 's'}`
+    : `Drag to pick ${name(list[0])} → ${name(list[max - 1])}`;
+}
+
+// Pointer dragging (mouse, touch, pen) is handled on the track itself: stacked
+// native range inputs don't take touch drags reliably. Pressing anywhere on the
+// track grabs the nearest handle. The inputs remain for keyboard/screen readers.
+function setupTrimDrag() {
+  const track = $('trim-track');
+  let which = null;
+  const valueAt = (clientX) => {
+    const max = Number($('trim-hi').max);
+    const r = track.getBoundingClientRect();
+    const usable = r.width - 22; // thumb width
+    const f = Math.min(1, Math.max(0, (clientX - r.left - 11) / usable));
+    return Math.round(1 + f * (max - 1));
+  };
+  track.addEventListener('pointerdown', (e) => {
+    if ($('trim-lo').disabled) return;
+    const v = valueAt(e.clientX);
+    const lo = Number($('trim-lo').value);
+    const hi = Number($('trim-hi').value);
+    if (v < lo) which = 'lo';
+    else if (v > hi) which = 'hi';
+    else which = v - lo <= hi - v ? 'lo' : 'hi';
+    track.setPointerCapture(e.pointerId);
+    $('trim-' + which).focus({ preventScroll: true });
+    move(e);
+    e.preventDefault();
+  });
+  const move = (e) => {
+    if (!which) return;
+    const input = $('trim-' + which);
+    const v = String(valueAt(e.clientX));
+    if (input.value !== v) { input.value = v; onTrim(which); }
+  };
+  track.addEventListener('pointermove', move);
+  const end = () => { which = null; };
+  track.addEventListener('pointerup', end);
+  track.addEventListener('pointercancel', end);
+}
+
+function onTrim(which) {
+  const lo = $('trim-lo');
+  const hi = $('trim-hi');
+  // Handles can meet but not cross.
+  if (Number(lo.value) > Number(hi.value)) {
+    if (which === 'lo') lo.value = hi.value; else hi.value = lo.value;
+  }
+  // Keep the active handle on top so a handle parked at an end can still be grabbed.
+  lo.style.zIndex = which === 'lo' ? '3' : '2';
+  hi.style.zIndex = which === 'hi' ? '3' : '2';
+  const list = trimList();
+  const a = Number(lo.value);
+  const b = Number(hi.value);
+  list.forEach((ep, i) => {
+    if (i + 1 >= a && i + 1 <= b) state.selected.add(ep.id); else state.selected.delete(ep.id);
+  });
+  state.trimActive = true;
+  renderEpisodes();
+  renderBar();
 }
 
 function render() {
@@ -187,6 +284,7 @@ function toggle(id, shift, on) {
 }
 
 function selectWhere(pred) {
+  state.trimActive = false;
   for (const ep of visibleEpisodes()) if (pred(ep)) state.selected.add(ep.id);
   render();
 }
@@ -414,17 +512,16 @@ async function init() {
   $('search').addEventListener('input', (e) => { state.search = e.target.value; renderSeasons(); renderEpisodes(); });
   $('quality').addEventListener('change', (e) => { state.quality = e.target.value; store.set('quality', state.quality); renderEpisodes(); renderBar(); });
   $('relay').addEventListener('change', (e) => { store.set('relay', e.target.value.trim()); });
-  $('range-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const from = Number($('range-from').value || 1);
-    const to = Number($('range-to').value || $('range-to').placeholder);
-    const [lo, hi] = from <= to ? [from, to] : [to, from];
-    if (state.search) { state.search = ''; $('search').value = ''; }
-    selectWhere((ep) => ep.episode >= lo && ep.episode <= hi);
-  });
+  $('trim-lo').addEventListener('input', () => onTrim('lo'));
+  $('trim-hi').addEventListener('input', () => onTrim('hi'));
+  setupTrimDrag();
   $('select-all').addEventListener('click', () => selectWhere(() => true));
   $('select-new').addEventListener('click', () => selectWhere((ep) => !isSaved(ep.id)));
-  $('clear').addEventListener('click', () => { state.selected.clear(); render(); });
+  $('clear').addEventListener('click', () => {
+    state.selected.clear();
+    state.trimSeason = null; // reset the range handles too
+    render();
+  });
   $('download').addEventListener('click', startDownloads);
   $('cancel-all').addEventListener('click', () => { for (const j of state.queue) cancelJob(j); });
   $('pick-folder').addEventListener('click', async () => {
