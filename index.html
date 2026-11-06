@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aleph with Beth Offline</title>
+  <meta name="description" content="Download the free Aleph with Beth Biblical Hebrew lessons, tagged as TV episodes for the Apple TV app.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1><span class="mark" aria-hidden="true">א</span> Aleph with Beth <span class="muted">Offline</span></h1>
+      <p class="lede">
+        Download the free Biblical Hebrew lessons, ready for the Apple TV app: named, numbered and tagged as episodes, with cover art.
+        Videos come straight from <a href="https://lets.church/channel/AlephwithBeth" target="_blank" rel="noopener">Lets.Church</a>,
+        where the creators have shared them freely as public domain. Nothing is stored in between.
+      </p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="notice" class="notice" hidden></div>
+
+    <section class="panel controls" aria-label="Choose episodes">
+      <div class="order-row">
+        <span class="range-label">Order</span>
+        <div class="segmented" id="order" role="group" aria-label="Order">
+          <button type="button" data-order="course" title="Lessons with their review games and stories in between, the way the creators sequence the course">Course order</button>
+          <button type="button" data-order="type" title="Lessons, review games, stories, songs and extras listed separately">By type</button>
+        </div>
+      </div>
+      <div class="seasons" role="tablist" id="seasons"></div>
+
+      <div class="row">
+        <label class="field grow">
+          <span>Search</span>
+          <input type="search" id="search" placeholder="Title or lesson number" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>Quality</span>
+          <select id="quality">
+            <option value="VIDEO_1080P">1080p video (recommended)</option>
+            <option value="VIDEO_4K">4K video (very large)</option>
+            <option value="AUDIO">Audio only</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="trim" id="trim">
+        <div class="trim-head">
+          <span class="range-label">Range</span>
+          <span class="trim-readout" id="trim-readout">Drag to pick a range</span>
+        </div>
+        <div class="trim-track" id="trim-track">
+          <div class="trim-fill" id="trim-fill"></div>
+          <input type="range" id="trim-lo" min="1" max="2" value="1" step="1" aria-label="First episode in range">
+          <input type="range" id="trim-hi" min="1" max="2" value="2" step="1" aria-label="Last episode in range">
+        </div>
+      </div>
+
+      <div class="row quick">
+        <button type="button" class="btn ghost" id="select-all">Select all</button>
+        <button type="button" class="btn ghost" id="clear">Clear</button>
+        <span class="hint">Or tick episodes; <kbd>Shift</kbd>-tick selects everything between.</span>
+      </div>
+
+      <div class="summary-row" id="bar">
+        <div class="summary" aria-live="polite">
+          <div><strong id="sel-count">0</strong> <span id="sel-noun">episodes selected</span></div>
+          <div class="muted" id="sel-size">Pick episodes with the range or the list below</div>
+          <div class="unavail" id="unavail" hidden>
+            <span id="unavail-text"></span>
+            <span class="info">
+              <button type="button" class="info-btn" id="unavail-info" aria-describedby="unavail-tip" aria-expanded="false" aria-label="Which episodes?">
+                <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="6.3" r="1.1" fill="currentColor"/><path d="M10 9v5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+              <span class="tip" role="tooltip" id="unavail-tip"></span>
+            </span>
+          </div>
+        </div>
+        <div class="bar-actions">
+          <button class="btn ghost" id="pick-folder" hidden>Save to folder…</button>
+          <button class="btn primary" id="download" disabled>Download</button>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Episodes">
+      <ol class="episodes" id="episodes"></ol>
+      <p class="empty" id="empty" hidden>No episodes match.</p>
+    </section>
+
+    <section class="panel queue" id="queue-panel" aria-label="Downloads" hidden>
+      <div class="queue-head">
+        <h2>Downloads</h2>
+        <button class="btn ghost" id="cancel-all">Cancel remaining</button>
+      </div>
+      <ol id="queue"></ol>
+    </section>
+
+    <details class="panel help">
+      <summary>Getting them onto your iPhone</summary>
+      <ol>
+        <li>Download episodes here (on a Mac, Chrome or Edge lets you pick a folder and saves straight into it).</li>
+        <li>Open the <strong>TV</strong> app on the Mac → <em>File → Import…</em> and pick the files. They appear under <em>TV Shows → Aleph with Beth</em>, in order.</li>
+        <li>Plug in the iPhone, open it in <strong>Finder</strong> → <em>TV Shows</em> tab → tick <em>Aleph with Beth</em> → <em>Sync</em>.</li>
+        <li>On the iPhone, open the TV app → <em>Library</em>. It remembers where you stopped and marks watched episodes.</li>
+      </ol>
+      <p>Audio-only files go to the <strong>Music</strong> app instead (File → Import). To keep your place, select them in Music → <em>Get Info → Options → Remember playback position</em>.</p>
+      <p>Infuse, VLC and other players read the same episode tags.</p>
+    </details>
+
+    <details class="panel help" id="settings">
+      <summary>Settings</summary>
+      <label class="field">
+        <span>Relay address</span>
+        <input type="url" id="relay" placeholder="https://aleph-with-beth-relay.yourname.workers.dev">
+      </label>
+      <p class="hint">The relay is a small Cloudflare Worker that passes the files through (Lets.Church doesn’t let other websites read them directly). See the project README.</p>
+    </details>
+  </main>
+
+
+  <footer class="wrap foot">
+    <p>Aleph with Beth is made by Andrew &amp; Beth Case. <a href="https://freehebrew.online" target="_blank" rel="noopener">freehebrew.online</a> · <a href="https://freehebrew.online/give" target="_blank" rel="noopener">Support their work</a></p>
+    <p class="muted" id="catalog-date"></p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
